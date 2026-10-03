@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GGC STUDY FIT ASSESSMENT™ — Discover Your Potential. Find Your Direction.</title>
+  <meta name="description" content="GGC STUDY FIT ASSESSMENT™ membantu siswa dan orang tua menemukan jurusan kuliah paling presisi berdasarkan 84 indikator profil diri dan matriks rumpun studi.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- =========================================================================
+       HEADER / NAVBAR
+       ========================================================================= -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="javascript:void(0)" onclick="showView('landing-view')" class="brand-wrapper" title="Kembali ke Beranda">
+        <img src="assets/logo.jpg" alt="Go Great Career Logo" class="brand-logo-img">
+        <div class="brand-text-block">
+          <span class="brand-main-title">GO GREAT CAREER</span>
+          <span class="brand-sub-title">CAREER READINESS PLATFORM</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#about" onclick="showView('landing-view')" class="nav-link">Tentang Asesmen</a></li>
+        <li><a href="#dimensions" onclick="showView('landing-view')" class="nav-link">7 Dimensi Profil</a></li>
+        <li><a href="#matrix-system" onclick="showView('landing-view')" class="nav-link">Dual-Matrix™</a></li>
+        <li><a href="#why-parents" onclick="showView('landing-view')" class="nav-link">Nilai untuk Orang Tua</a></li>
+      </ul>
+
+      <div class="nav-cta-group">
+        <button type="button" class="btn-outline" id="btn-resume-report" style="display: none;" onclick="showView('report-view')">
+          <i class="fas fa-file-alt"></i> <span>Lihat Laporan</span>
+        </button>
+        <button type="button" class="btn-primary btn-start-assessment">
+          <span>Mulai Asesmen</span> <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- Hamburger button for mobile/tablet -->
+      <button type="button" class="mobile-menu-btn" id="btn-mobile-menu" aria-label="Buka Menu Navigasi">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+    <div class="drawer-header">
+      <div class="drawer-brand">
+        <img src="assets/logo.jpg" alt="Logo" class="brand-logo-img">
+        <div class="brand-text-block">
+          <span class="brand-main-title">GO GREAT CAREER</span>
+          <span class="brand-sub-title">CAREER READINESS PLATFORM</span>
+        </div>
+      </div>
+      <button type="button" class="drawer-close-btn" id="btn-drawer-close" aria-label="Tutup Menu">&times;</button>
+    </div>
+    <ul class="drawer-links">
+      <li><a href="#about" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-home"></i> <span>Tentang Asesmen</span></a></li>
+      <li><a href="#dimensions" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-th-list"></i> <span>7 Dimensi Profil</span></a></li>
+      <li><a href="#matrix-system" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-network-wired"></i> <span>Dual-Matrix™</span></a></li>
+      <li><a href="#why-parents" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-user-friends"></i> <span>Nilai untuk Orang Tua</span></a></li>
+    </ul>
+    <div class="drawer-cta-group">
+      <button type="button" class="btn-primary btn-start-assessment" style="width: 100%; justify-content: center;" onclick="closeMobileDrawer();">
+        <span>Mulai Asesmen</span> <i class="fas fa-arrow-right"></i>
+      </button>
+      <button type="button" class="btn-outline" id="btn-resume-report-mobile" style="width: 100%; justify-content: center; display: none;" onclick="closeMobileDrawer(); showView('report-view');">
+        <i class="fas fa-file-alt"></i> <span>Lihat Laporan Terakhir</span>
+      </button>
+    </div>
+  </div>
+  <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeMobileDrawer()"></div>
+
+  <!-- =========================================================================
+       VIEW 1: LANDING PAGE VIEW
+       ========================================================================= -->
+  <main id="landing-view" class="app-view active">
+    
+    <!-- Hero Section -->
+    <section class="hero-section" id="about">
+      <div class="hero-backdrop-glow"></div>
+      <div class="container">
+        <div class="hero-grid">
+          
+          <!-- Hero Text -->
+          <div class="hero-content">
+            <div class="badge-assessment-pill">
+              <i class="fas fa-certificate"></i>
+              <span>GGC STUDY FIT ASSESSMENT™</span>
+            </div>
+
+            <h1 class="hero-main-title">
+              Discover Your Potential.<br>
+              <span class="highlight-gold">Find Your Direction.</span>
+            </h1>
+
+            <p class="hero-tagline">
+              Bukan sekadar rekomendasi jurusan — Ini adalah pemetaan masa depan yang ilmiah dan terstruktur.
+            </p>
+
+            <p class="hero-lead-text">
+              Gunakan algoritma <strong>Dual-Matrix Matching™</strong> yang memetakan 84 indikator psikometrik siswa (Talent, Interest, Work Style, Values, Academic Strength, Career Orientation, & Readiness) dengan profil 18 rumpun program studi.
+            </p>
+
+            <div class="hero-actions">
+              <button type="button" class="btn-primary btn-start-assessment">
+                <i class="fas fa-play-circle"></i> <span>Mulai Asesmen 84 Item</span>
+              </button>
+              <button type="button" class="btn-outline" onclick="applyDemoProfile('tech_ai'); processAndShowReport();">
+                <i class="fas fa-laptop-code"></i> <span>Lihat Contoh Laporan AI/Tech</span>
+              </button>
+            </div>
+
+            <div class="hero-stats-row">
+              <div class="stat-item">
+                <span class="stat-value">84</span>
+                <span class="stat-label">Indikator Komprehensif</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">7</span>
+                <span class="stat-label">Dimensi Pemetaan Diri</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">18</span>
+                <span class="stat-label">Kelompok Jurusan Kuliah</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">2</span>
+                <span class="stat-label">Matriks Person × Study</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Visual Card Preview -->
+          <div class="hero-visual">
+            <div class="hero-card-preview">
+              <div class="preview-badge-row">
+                <img src="assets/logo.jpg" alt="Logo GGC" class="card-logo-mini">
+                <span class="badge-cat">GGC Official Diagnostic</span>
+              </div>
+
+              <div class="card-sample-user">
+                <div class="user-avatar-circle">
+                  <i class="fas fa-user-graduate"></i>
+                </div>
+                <div>
+                  <h4 class="user-name-title">Ahmad Fajar Pratama</h4>
+                  <span class="user-subtitle">Kelas 12 SMA • Kode ID: GGC-82914</span>
+                </div>
+              </div>
+
+              <div class="sample-signature-box">
+                <div class="sig-label-mini">YOUR POTENTIAL SIGNATURE</div>
+                <div class="sig-code-mini">Analytical + Social + Verbal</div>
+              </div>
+
+              <div class="sample-match-item">
+                <div class="match-info">
+                  <span class="match-name">Teknik Informatika & AI</span>
+                  <div style="font-size:0.75rem; color:#64748B;">Why This Fit & Watch Out Gaps Ready</div>
+                </div>
+                <span class="match-badge-pill">96% Very Strong</span>
+              </div>
+
+              <div class="sample-match-item" style="border-left-color: #0284C7;">
+                <div class="match-info">
+                  <span class="match-name">Psikologi & Ilmu Perilaku</span>
+                  <div style="font-size:0.75rem; color:#64748B;">High Analytical & Empathy Alignment</div>
+                </div>
+                <span class="match-badge-pill" style="color: #0284C7; background: #EFF6FF;">91% Strong Fit</span>
+              </div>
+
+              <div class="sample-match-item" style="border-left-color: #D97706;">
+                <div class="match-info">
+                  <span class="match-name">Readiness Index: 88%</span>
+                  <div style="font-size:0.75rem; color:#64748B;">Ready To Decide (Sangat Siap)</div>
+                </div>
+                <span class="match-badge-pill" style="color: #D97706; background: #FFFBEB;">Optimal</span>
+              </div>
+
+              <div style="text-align: center; margin-top: 18px;">
+                <small style="color: #64748B; font-size: 0.8rem;">
+                  <i class="fas fa-shield-alt text-emerald"></i> Dilengkapi analisis <em>"Why This Fit?"</em> dan <em>"What To Watch Out For?"</em>
+                </small>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 Dimensions Overview Section -->
+    <section class="section-wrapper" id="dimensions">
+      <div class="container">
+        <div class="section-header-center">
+          <span class="section-kicker">7 STRUKTUR UTAMA ASESMEN</span>
+          <h2 class="section-heading">Total 84 Item yang Mengurai DNA Potensi Siswa</h2>
+          <p class="section-subtext">
+            Kami tidak membatasi pertanyaan pada “jurusan apa yang kamu sukai”, melainkan mengevaluasi bakat alamiah, gaya kerja, fondasi akademik, hingga kesiapan eksekusi.
+          </p>
+        </div>
+
+        <div class="dimensions-grid">
+          
+          <!-- Section A -->
+          <div class="dimension-card">
+            <div class="dim-card-header">
+              <div class="dim-icon-wrapper"><i class="fas fa-brain"></i></div>
+              <div>
+                <span class="dim-card-code">BAGIAN A • 18 ITEM</span>
+                <h3 class="dim-card-title">Talent (Bakat Alami)</h3>
+              </div>
+            </div>
+            <p class="dim-card-desc">“What am I good at?” — Kapasitas kognitif dan ketajaman bakat dalam memecahkan masalah nyata.</p>
+            <div class="dim-sub-pills">
+              <span class="dim-sub-pill">Verbal</span>
+              <span class="dim-sub-pill">Numerical</span>
+              <span class="dim-sub-pill">Analytical</span>
+              <span class="dim-sub-pill">Spatial</span>
+              <span class="dim-sub-pill">Creative</span>
+              <span class="dim-sub-pill">Social</span>
+            </div>
+          </div>
+
+          <!-- Section B -->
+          <div class="dimension-card">
+            <div class="dim-card-header">
+              <div class="dim-icon-wrapper"><i class="fas fa-heart"></i></div>
+              <div>
+                <span class="dim-card-code">BAGIAN B • 18 ITEM</span>
+                <h3 class="dim-card-title">Interest (Minat Aktivitas)</h3>
+              </div>
+            </div>
+            <p class="dim-card-desc">“What do I enjoy?” — Aktivitas autentik yang memberikan antusiasme dan bahan bakar energi belajar.</p>
+            <div class="dim-sub-pills">
+              <span class="dim-sub-pill">People</span>
+              <span class="dim-sub-pill">Ideas</span>
+              <span class="dim-sub-pill">Data</span>
+              <span class="dim-sub-pill">Things</span>
+              <span class="dim-sub-pill">Creative</span>
+              <span class="dim-sub-pill">Nature/Life</span>
+            </div>
+          </div>
+
+          <!-- Section C -->
+          <div class="dimension-card">
+            <div class="dim-card-header">
+              <div class="dim-icon-wrapper"><i class="fas fa-user-cog"></i></div>
+              <div>
+                <span class="dim-card-code">BAGIAN C • 12 ITEM</span>
+                <h3 class="dim-card-title">Personality / Work Style</h3>
+              </div>
+            </div>
+            <p class="dim-card-desc">Preferensi lingkungan belajar dan gaya kerja agar siswa dapat berkinerja secara optimal tanpa burnout.</p>
+            <div class="dim-sub-pills">
+              <span class="dim-sub-pill">Structure</span>
+              <span class="dim-sub-pill">Exploration</span>
+              <span class="dim-sub-pill">Social</span>
+              <span class="dim-sub-pill">Independence</span>
+            </div>
+          </div>
+
+          <!-- Section D -->
+          <div class="dimension-card">
+            <div class="dim-card-header">
+              <div class="dim-icon-wrapper"><i class="fas fa-compass"></i></div>
+              <div>
+                <span class="dim-card-code">BAGIAN D • 12 ITEM</span>
+                <h3 class="dim-card-title">Values (Nilai Hidup)</h3>
+              </div>
+            </div>
+            <p class="dim-card-desc">“What matters to me?” — Kompas moral dan sumber kepuasan intrinsik dalam menempuh karier masa depan.</p>
+            <div class="dim-sub-pills">
+              <span class="dim-sub-pill">Meaning</span>
+              <span class="dim-sub-pill">Security</span>
+              <span class="dim-sub-pill">Achievement</span>
+              <span class="dim-sub-pill">Freedom</span>
+              <span class="dim-sub-pill">Income</span>
+              <span class="dim-sub-pill">Contribution</span>
+            </div>
+          </div>
+
+          <!-- Section E -->
+          <div class="dimension-card">
+            <div class="dim-card-header">
+              <div class="dim-icon-wrapper"><i class="fas fa-graduation-cap"></i></div>
+              <div>
+                <span class="dim-card-code">BAGIAN E • 12 ITEM</span>
+                <h3 class="dim-card-title">Academic Strength</h3>
+              </div>
+            </div>
+            <p class="dim-card-desc">Self-report kekuatan penguasaan mata pelajaran sebagai pilar pendukung kesiapan kurikulum universitas.</p>
+            <div class="dim-sub-pills">
+              <span class="dim-sub-pill">Language</span>
+              <span class="dim-sub-pill">Math</span>
+              <span class="dim-sub-pill">Science</span>
+              <span class="dim-sub-pill">Social</span>
+              <span class="dim-sub-pill">Art/Design</span>
+              <span class="dim-sub-pill">Technology</span>
+            </div>
+          </div>
+
+          <!-- Section F -->
+          <div class="dimension-card">
+            <div class="dim-card-header">
+              <div class="dim-icon-wrapper"><i class="fas fa-briefcase"></i></div>
+              <div>
+                <span class="dim-card-code">BAGIAN F • 6 ITEM</span>
+                <h3 class="dim-card-title">Career Orientation</h3>
+              </div>
+            </div>
+            <p class="dim-card-desc">Visi dan preferensi lingkungan industri yang siswa bayangkan untuk berkontribusi di masa depan.</p>
+            <div class="dim-sub-pills">
+              <span class="dim-sub-pill">People</span>
+              <span class="dim-sub-pill">Information</span>
+              <span class="dim-sub-pill">Business</span>
+              <span class="dim-sub-pill">Technology</span>
+              <span class="dim-sub-pill">Helping</span>
+              <span class="dim-sub-pill">Creating</span>
+            </div>
+          </div>
+
+          <!-- Section G -->
+          <div class="dimension-card" style="border-color: var(--gold);">
+            <div class="dim-card-header">
+              <div class="dim-icon-wrapper" style="background: var(--gold-subtle); color: var(--gold-dark);"><i class="fas fa-flag-checkered"></i></div>
+              <div>
+                <span class="dim-card-code" style="color: var(--primary);">BAGIAN G • 6 ITEM (KRUSIAL)</span>
+                <h3 class="dim-card-title">Readiness Index</h3>
+              </div>
+            </div>
+            <p class="dim-card-desc">“Am I ready to choose?” — Menilai kematangan eksplorasi siswa agar keputusan tidak impulsif.</p>
+            <div class="dim-sub-pills">
+              <span class="dim-sub-pill">Self-awareness</span>
+              <span class="dim-sub-pill">Exploration</span>
+              <span class="dim-sub-pill">Information</span>
+              <span class="dim-sub-pill">Career awareness</span>
+              <span class="dim-sub-pill">Decision confidence</span>
+              <span class="dim-sub-pill">Commitment</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Dual Matrix Explainer Section -->
+    <section class="section-wrapper bg-alt" id="matrix-system">
+      <div class="container">
+        <div class="section-header-center">
+          <span class="section-kicker">INOVASI ALGORITMA GGC</span>
+          <h2 class="section-heading">Mengapa Pendekatan Dual-Matrix Jauh Lebih Akurat?</h2>
+          <p class="section-subtext">
+            Bukan sekadar menjumlahkan angka jawaban, melainkan mengalikan <strong>Person Profile</strong> dengan <strong>Study Profile Matrix</strong> berbobot spesifik.
+          </p>
+        </div>
+
+        <div class="matrix-explainer-grid">
+          
+          <div class="matrix-box accent-gold">
+            <h3><i class="fas fa-fingerprint text-gold"></i> MATRIX 1: PERSON PROFILE</h3>
+            <p>Sistem menghitung skor rata-rata subdimensi dari 84 item sehingga melahirkan profil otentik siswa:</p>
+            <ul class="matrix-feature-list">
+              <li><i class="fas fa-check-circle"></i> <strong>Subskor Presisi:</strong> Verbal, Analytical, Numerical, Spatial, Creative, Social terukur dalam skala 1.0 – 5.0.</li>
+              <li><i class="fas fa-check-circle"></i> <strong>Your Potential Signature:</strong> Menemukan 3 kombinasi kekuatan tertinggi siswa (misal: <em>Analytical + Social + Verbal</em>).</li>
+              <li><i class="fas fa-check-circle"></i> <strong>Readiness Diagnostic:</strong> Memisahkan antara kecocokan minat dengan kematangan kesiapan memilih.</li>
+            </ul>
+          </div>
+
+          <div class="matrix-box accent-primary">
+            <h3><i class="fas fa-sitemap text-emerald"></i> MATRIX 2: STUDY PROFILE</h3>
+            <p>Setiap dari 18 rumpun jurusan memiliki <em>Expected Weighted Profile</em> yang dikalibrasi sesuai tuntutan dunia riil:</p>
+            <ul class="matrix-feature-list">
+              <li><i class="fas fa-check-circle"></i> <strong>Profil Ekspektasi:</strong> Psikologi (People ↑↑, Analytical ↑↑), Teknik (Numerical ↑↑, Things ↑↑), Desain (Creative ↑↑, Spatial ↑↑).</li>
+              <li><i class="fas fa-check-circle"></i> <strong>Student × Study Matrix:</strong> Perhitungan kecocokan multidimensi menghasilkan kategori Very Strong, Strong, Potential, atau Explore.</li>
+              <li><i class="fas fa-check-circle"></i> <strong>Defensible & Ilmiah:</strong> Memberi penjelasan <em>"Why This Fit"</em> dan peringatan dini <em>"What To Watch Out For"</em>.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Why This Matters for Parents Section -->
+    <section class="section-wrapper" id="why-parents">
+      <div class="container">
+        <div class="section-header-center">
+          <span class="section-kicker">NILAI INVESTASI KELUARGA</span>
+          <h2 class="section-heading">Laporan yang Memberi Kejelasan Nyata Bagi Orang Tua</h2>
+          <p class="section-subtext">
+            Bukan sekadar daftar nama jurusan tanpa alasan. Kami menghadirkan analisis komprehensif yang bisa menjadi kompas diskusi orang tua dan anak.
+          </p>
+        </div>
+
+        <div class="parent-action-plan-box" style="margin-bottom: 0;">
+          <div class="plan-header">
+            <h3>3 Manfaat Utama Laporan GGC Study Fit:</h3>
+          </div>
+          <div class="plan-steps-grid">
+            <div class="plan-step-card">
+              <div class="step-num-pill"><i class="fas fa-lightbulb"></i></div>
+              <h5>1. Penjelasan Rasional (Why This Fit?)</h5>
+              <p>Orang tua memahami secara gamblang mengapa anak cocok di rumpun tertentu berdasarkan kombinasi bakat dan gaya kerjanya, bukan sekadar intuisi sesaat.</p>
+            </div>
+            <div class="plan-step-card">
+              <div class="step-num-pill"><i class="fas fa-shield-alt"></i></div>
+              <h5>2. Antisipasi Tantangan (What To Watch Out For?)</h5>
+              <p>Mendeteksi blindspots sedini mungkin. Jika anak berminat ke kedokteran namun ketahanan belajarnya masih perlu ditingkatkan, ada panduan tindakan konkret yang jelas.</p>
+            </div>
+            <div class="plan-step-card">
+              <div class="step-num-pill"><i class="fas fa-compass"></i></div>
+              <h5>3. Kesiapan Keputusan (Readiness Gauge)</h5>
+              <p>Mengetahui apakah anak sudah benar-benar siap memilih universitas atau masih butuh eksplorasi kurikulum dan konsultasi mendalam dengan orang tua.</p>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 32px;">
+            <button type="button" class="btn-primary btn-start-assessment">
+              <i class="fas fa-arrow-right"></i> <span>Mulai Asesmen Sekarang</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       VIEW 2: ASSESSMENT QUESTIONNAIRE VIEW
+       ========================================================================= -->
+  <main id="assessment-view" class="app-view">
+    
+    <!-- Sticky Progress Tracker -->
+    <div class="assessment-sticky-tracker">
+      <div class="container tracker-flex">
+        
+        <div class="tracker-top-row">
+          <div class="tracker-info-left">
+            <span class="tracker-brand-badge">GGC STUDY FIT™</span>
+            <span id="section-badge" class="section-indicator-badge">BAGIAN A DARI 7</span>
+          </div>
+
+          <div class="tracker-tools-right">
+            <select id="demo-profile-select" class="demo-selector-select" title="Pilih profil untuk pengisian otomatis instan (Demo)">
+              <option value="">⚡ Demo Isi Cepat (Pilih Profil)</option>
+              <option value="tech_ai">Profil 1: Informatika & Data Science</option>
+              <option value="psychology">Profil 2: Psikologi & Humaniora</option>
+              <option value="medicine">Profil 3: Kedokteran & Biomedis</option>
+              <option value="creative_arts">Profil 4: Desain & Seni Kreatif</option>
+            </select>
+            <button type="button" class="btn-outline btn-reset-btn" id="btn-reset-assessment" title="Reset jawaban">
+              <i class="fas fa-redo"></i> <span>Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="progress-bar-wrapper">
+          <div class="progress-labels">
+            <span id="progress-percentage-text">0% Selesai</span>
+            <span id="progress-count-text">0 dari 84 Terjawab</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="assessment-progress-fill"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container assessment-layout">
+
+      <!-- Step Navigation Tabs -->
+      <div class="step-tabs-container" id="assessment-step-tabs">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Current Section Banner -->
+      <div class="current-section-banner">
+        <span class="sec-badge-pill" id="section-code-pill">BAGIAN A</span>
+        <h2 class="sec-main-heading" id="section-title">TALENT — “WHAT AM I GOOD AT?”</h2>
+        <div class="sec-subtitle-text" id="section-subtitle">Bakat alami dan kapasitas kognitif Anda</div>
+        <p class="sec-desc-text" id="section-description">
+          Bagian ini mengukur kecenderungan bakat alamiah dan kekuatan berpikir Anda dalam menyelesaikan berbagai tantangan.
+        </p>
+        <div class="subdims-tags-row" id="section-subdims-tags">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- Scale Guidance Callout -->
+      <div style="background: #FAF7EE; border-left: 4px solid var(--gold); padding: 12px 18px; border-radius: 6px; margin-bottom: 24px; font-size: 0.88rem; color: #785A1D;">
+        <strong>Petunjuk Skala Pilihan:</strong> 
+        1 = Sangat Tidak Sesuai | 2 = Tidak Sesuai | 3 = Cukup Tidak Sesuai | 4 = Cukup Sesuai | 5 = Sangat Sesuai. 
+        <em>(Pilih jawaban yang paling jujur dan autentik menggambarkan diri Anda).</em>
+      </div>
+
+      <!-- Questions List Container -->
+      <div class="assessment-items-list" id="assessment-items-container">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Navigation Actions -->
+      <div class="assessment-nav-actions">
+        <button type="button" class="btn-nav btn-nav-back" id="btn-nav-prev" disabled>
+          <i class="fas fa-arrow-left"></i> <span>Bagian Sebelumnya</span>
+        </button>
+
+        <button type="button" class="btn-nav btn-nav-forward" id="btn-nav-next">
+          <span>Lanjut ke Bagian B</span> <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       VIEW 3: COMPREHENSIVE DIAGNOSTIC REPORT VIEW
+       ========================================================================= -->
+  <main id="report-view" class="app-view">
+    <div class="report-view-wrapper">
+      <div class="container">
+
+        <!-- Top Action Toolbar -->
+        <div class="report-action-toolbar">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button type="button" class="btn-primary" id="btn-print-report">
+              <i class="fas fa-print"></i> <span>Cetak / Simpan Laporan PDF</span>
+            </button>
+            <button type="button" class="btn-outline" id="btn-share-report">
+              <i class="fas fa-share-alt"></i> <span>Salin Ringkasan</span>
+            </button>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button type="button" class="btn-outline" id="btn-retake-assessment">
+              <i class="fas fa-edit"></i> <span>Ubah / Periksa Jawaban</span>
+            </button>
+            <a href="https://wa.me/?text=Halo%20Go%20Great%20Career,%20saya%20ingin%20konsultasi%20hasil%20asesmen%20Study%20Fit." target="_blank" class="btn-gold">
+              <i class="fab fa-whatsapp"></i> <span>Konsultasi Konselor GGC</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- The Official Printable Report Document -->
+        <div class="report-doc-sheet" id="printable-report-area">
+
+          <!-- 1. Header with Logo & Official Verification -->
+          <div class="rep-official-header">
+            <div class="rep-brand-block">
+              <img src="assets/logo.jpg" alt="Logo Go Great Career" class="rep-logo-img">
+              <div class="rep-title-group">
+                <h1>GGC STUDY FIT ASSESSMENT™</h1>
+                <p>OFFICIAL STUDENT & PARENT DIAGNOSTIC REPORT</p>
+              </div>
+            </div>
+
+            <div class="rep-meta-block">
+              <span class="rep-meta-badge">VERIFIED ASSESSMENT REPORT</span>
+              <div class="rep-meta-item">ID: <strong id="rep-cert-code">GGC-82914</strong></div>
+              <div class="rep-meta-item">Tanggal: <strong id="rep-report-date">3 Oktober 2026</strong></div>
+            </div>
+          </div>
+
+          <!-- 2. Candidate Bio Row -->
+          <div class="rep-student-bio-bar">
+            <div class="bio-cell">
+              <div class="label">Nama Siswa</div>
+              <div class="val" id="rep-student-name">Ahmad Fajar Pratama</div>
+            </div>
+            <div class="bio-cell">
+              <div class="label">Jenjang / Kelas</div>
+              <div class="val" id="rep-student-grade">Kelas 12 SMA</div>
+            </div>
+            <div class="bio-cell">
+              <div class="label">Algoritma Matriks</div>
+              <div class="val">Dual-Matrix™ (84 Item)</div>
+            </div>
+            <div class="bio-cell">
+              <div class="label">Status Evaluasi</div>
+              <div class="val" style="color: #059669;"><i class="fas fa-check-circle"></i> Selesai Lengkap</div>
+            </div>
+          </div>
+
+          <!-- 3. Potential Signature Showcase -->
+          <div class="rep-signature-showcase">
+            <div class="sig-crown-tag">
+              <i class="fas fa-award"></i>
+              <span>CORE ARCHETYPE OF STRENGTHS</span>
+            </div>
+
+            <div class="rep-signature-code" id="rep-signature-code">
+              Analytical + Social + Verbal
+            </div>
+
+            <div class="rep-signature-title" id="rep-signature-title">
+              "The Strategic Counselor & Jurist"
+            </div>
+
+            <p class="rep-signature-desc" id="rep-signature-desc">
+              Anda memiliki keunggulan langka dalam mengombinasikan ketajaman analisis logis, kefasihan mengolah bahasa, dan kepekaan memahami interaksi manusia. Sangat unggul dalam memecahkan problem sosial-legal dan merumuskan strategi berbasis wawasan mendalam.
+            </p>
+
+            <div class="rep-signature-badges" id="rep-signature-badges">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- 4. Top 5 Major Recommendations -->
+          <div class="rep-section-heading">
+            <h2><i class="fas fa-trophy text-gold"></i> TOP 5 REKOMENDASI JURUSAN (STUDY FIT)</h2>
+            <p>Hasil kalkulasi perkalian Person Profile dengan Study Profile Matrix berbobot spesifik.</p>
+          </div>
+
+          <div class="top-majors-list" id="rep-top-five-container">
+            <!-- Rendered via JS -->
+          </div>
+
+          <!-- 5. Readiness Diagnostic Section (Section G) -->
+          <div class="rep-section-heading">
+            <h2><i class="fas fa-tachometer-alt text-emerald"></i> ANALISIS KESIAPAN MEMILIH (READINESS DIAGNOSTIC)</h2>
+            <p>Kecocokan minat yang tinggi harus diimbangi kesiapan eksplorasi dan pemahaman kurikulum.</p>
+          </div>
+
+          <div class="readiness-diagnostic-card">
+            <div class="readiness-overview-grid">
+              <div class="gauge-box-center">
+                <div class="gauge-percent-num" id="rep-readiness-percent">88%</div>
+                <div class="gauge-level-text" id="rep-readiness-level">Sangat Siap Memilih</div>
+                <div class="readiness-gauge-bar-track">
+                  <div class="readiness-gauge-bar-fill" id="rep-readiness-gauge-fill" style="width: 88%;"></div>
+                </div>
+              </div>
+
+              <div class="readiness-context-box">
+                <h4>Status Kesiapan Keputusan</h4>
+                <p id="rep-readiness-summary">
+                  Siswa telah memiliki pemahaman diri yang matang, informasi jurusan yang mendalam, serta kesiapan komitmen tinggi untuk mengeksekusi pilihan.
+                </p>
+                <p id="rep-readiness-advice" style="font-weight: 600; color: var(--primary);">
+                  Fokuskan pada penajaman target universitas terbaik, simulasi seleksi masuk (SNBP/SNBT/Mandiri), dan penyusunan strategi alternatif.
+                </p>
+                <div class="priority-tag-box">
+                  <i class="fas fa-bullseye text-gold"></i>
+                  <strong>Area Prioritas Pendampingan:</strong> <span id="rep-priority-focus">Informasi Kurikulum & Mata Kuliah</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Breakdown of 6 Readiness Dimensions -->
+            <div class="readiness-breakdown-grid" id="rep-readiness-breakdown">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- 6. Radar Chart & 7 Dimensions Breakdown -->
+          <div class="rep-section-heading">
+            <h2><i class="fas fa-chart-pie text-sky"></i> PEMETAAN KOMPREHENSIF 7 DIMENSI</h2>
+            <p>Visualisasi sebaran potensi pada Bakat Alami (Talent) dan Minat (Interest) serta nilai dimensi lainnya.</p>
+          </div>
+
+          <div class="charts-analytics-layout">
+            <div class="radar-chart-card">
+              <h4>Radar Potensi Bakat & Minat</h4>
+              <div id="rep-radar-chart-container">
+                <!-- SVG Radar generated here -->
+              </div>
+            </div>
+
+            <div class="dimension-scores-card" id="rep-dimension-breakdown-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- 7. All 18 Study Clusters Directory (Filterable) -->
+          <div class="all-clusters-section">
+            <div class="rep-section-heading">
+              <h2><i class="fas fa-th-large text-primary"></i> DIREKTORI 18 KELOMPOK JURUSAN</h2>
+              <p>Lihat tingkat kecocokan profil Anda terhadap seluruh kelompok rumpun program studi.</p>
+            </div>
+
+            <div class="filter-pills-bar">
+              <button type="button" class="filter-btn active" data-filter="all">Semua Rumpun (18)</button>
+              <button type="button" class="filter-btn" data-filter="very-strong">Very Strong Fit (88%+)</button>
+              <button type="button" class="filter-btn" data-filter="strong">Strong Fit (78-87%)</button>
+              <button type="button" class="filter-btn" data-filter="potential">Potential Fit (68-77%)</button>
+              <button type="button" class="filter-btn" data-filter="explore">Explore Further (&lt;68%)</button>
+            </div>
+
+            <div class="all-clusters-grid" id="rep-all-clusters-grid">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- 8. Action Plan for Parents & Students -->
+          <div class="parent-action-plan-box">
+            <div class="plan-header">
+              <h3><i class="fas fa-clipboard-list text-gold"></i> PANDUAN TINDAKAN 30 HARI UNTUK ORANG TUA & SISWA</h3>
+              <p style="color: var(--slate-600); font-size: 0.95rem;">Langkah konkret berikutnya untuk memastikan pilihan jurusan tepat sasaran:</p>
+            </div>
+
+            <div class="plan-steps-grid">
+              <div class="plan-step-card">
+                <div class="step-num-pill">1</div>
+                <h5>Validasi Bersama Keluarga</h5>
+                <p>Duduk bersama mendiskusikan hasil Top 3 Jurusan pada laporan ini. Diskusikan catatan <em>"What To Watch Out For"</em> secara terbuka dan suportif.</p>
+              </div>
+
+              <div class="plan-step-card">
+                <div class="step-num-pill">2</div>
+                <h5>Riset Silabus & Karir Nyata</h5>
+                <p>Unduh kurikulum dari 2-3 universitas target. Periksa mata kuliah semester 1-4 dan ajak anak berbicara dengan mahasiswa aktif atau alumni jurusan tersebut.</p>
+              </div>
+
+              <div class="plan-step-card">
+                <div class="step-num-pill">3</div>
+                <h5>Konsultasi Ahli Bersama GGC</h5>
+                <p>Jadwalkan sesi 1-on-1 bersama Education & Career Counselor Go Great Career untuk menyusun strategi seleksi masuk dan mitigasi kelemahan akademik.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9. Official Signoff & Verification Footer -->
+          <div class="rep-signoff-footer">
+            <div class="signoff-legal">
+              <strong>Catatan Validitas:</strong> GGC STUDY FIT ASSESSMENT™ dikembangkan oleh Go Great Career sebagai instrumen diagnostik peminatan studi berbasis pendekatan psikometrik terpadu. Hasil asesmen ini dirancang sebagai panduan pengambilan keputusan strategis bersama orang tua dan pendidik.
+            </div>
+
+            <div class="signoff-seal-box">
+              <div class="seal-stamp">
+                <i class="fas fa-check-double"></i> VERIFIED BY GGC
+              </div>
+              <small style="color: var(--slate-500); font-size: 0.75rem; display: block; margin-top: 4px;">Career Readiness Platform</small>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       MODAL 1: STUDENT ONBOARDING MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="modal-onboarding">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" onclick="closeStudentModal()">&times;</button>
+      
+      <div class="modal-header-block">
+        <img src="assets/logo.jpg" alt="Logo" class="modal-logo">
+        <h3 class="modal-title">Mulai Asesmen Minat & Bakat</h3>
+        <p class="modal-subtitle">Lengkapi identitas singkat sebelum memulai 84 item asesmen.</p>
+      </div>
+
+      <form id="student-onboarding-form">
+        <div class="form-group">
+          <label for="input-student-name">Nama Lengkap Siswa *</label>
+          <input type="text" id="input-student-name" required placeholder="Contoh: Ahmad Fajar Pratama">
+        </div>
+
+        <div class="form-group">
+          <label for="input-student-grade">Jenjang Pendidikan Saat Ini *</label>
+          <select id="input-student-grade" required>
+            <option value="Kelas 10 SMA">Kelas 10 SMA / MA / SMK</option>
+            <option value="Kelas 11 SMA">Kelas 11 SMA / MA / SMK</option>
+            <option value="Kelas 12 SMA" selected>Kelas 12 SMA / MA / SMK</option>
+            <option value="Gap Year / Persiapan Kuliah">Gap Year / Persiapan Kuliah</option>
+            <option value="Mahasiswa Semester Awal">Mahasiswa Semester Awal (Re-orientasi)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="input-student-contact">No. WhatsApp / Email Siswa atau Orang Tua</label>
+          <input type="text" id="input-student-contact" placeholder="Contoh: 081234567890 (Untuk pengiriman laporan)">
+        </div>
+
+        <div class="form-group">
+          <label for="input-student-goal">Cita-cita / Pilihan Jurusan Sementara (Opsional)</label>
+          <input type="text" id="input-student-goal" placeholder="Contoh: Teknik Informatika atau Psikologi">
+        </div>
+
+        <div style="background: #FAF7F0; border-radius: 8px; padding: 14px; margin-bottom: 20px; font-size: 0.85rem; color: #5B4416;">
+          <i class="fas fa-info-circle text-gold"></i>
+          <strong>Informasi Pengerjaan:</strong>
+          Asesmen terdiri dari 84 pernyataan (estimasi 12-15 menit). Tidak ada jawaban salah. Progres tersimpan otomatis jika Anda menutup browser.
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 14px;">
+          <span>Masuk ke Lembar Asesmen</span> <i class="fas fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 2: CLUSTER DETAIL MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="modal-cluster-detail">
+    <div class="modal-dialog" style="max-width: 720px;">
+      <button type="button" class="modal-close-btn" onclick="closeClusterModal()">&times;</button>
+      <div id="cluster-modal-content">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       LOADING OVERLAY
+       ========================================================================= -->
+  <div class="report-loading-overlay" id="report-loading-overlay">
+    <div class="spinner-dual-ring"></div>
+    <h3 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 8px;">Mengkalkulasi Dual-Matrix™...</h3>
+    <p style="color: #D1E5DD; font-size: 0.95rem;">Mengharmonisasikan Person Profile dengan 18 Study Clusters Matrix</p>
+  </div>
+
+  <!-- =========================================================================
+       SITE FOOTER
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-logo-wrap">
+            <img src="assets/logo.jpg" alt="Logo GGC" class="footer-logo">
+          </div>
+          <p class="footer-lead">
+            <strong>Go Great Career (GGC)</strong> adalah platform akselerasi kesiapan karier dan peminatan studi berbasis sains data dan psikometri modern, mendampingi generasi muda menggapai potensi terbaiknya.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>GGC Study Fit</h4>
+          <ul>
+            <li><a href="javascript:void(0)" onclick="openStudentModal()">Mulai Asesmen Baru</a></li>
+            <li><a href="#dimensions">7 Dimensi Penilaian</a></li>
+            <li><a href="#matrix-system">Algoritma Dual-Matrix</a></li>
+            <li><a href="#why-parents">Panduan Orang Tua</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Kontak & Layanan</h4>
+          <ul>
+            <li><i class="fas fa-envelope"></i> info@gogreatcareer.com</li>
+            <li><i class="fab fa-whatsapp"></i> +62 812-3456-7890</li>
+            <li><i class="fas fa-map-marker-alt"></i> Jakarta & Surabaya, Indonesia</li>
+            <li><a href="javascript:void(0)">Kebijakan Privasi & Etika Data</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 GO GREAT CAREER — All Rights Reserved. GGC STUDY FIT ASSESSMENT™ is a registered framework.</div>
+        <div>Discover Your Potential. Find Your Direction.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
