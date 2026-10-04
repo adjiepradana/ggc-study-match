@@ -34,13 +34,23 @@ document.addEventListener("DOMContentLoaded", () => {
     submit.querySelector("span").textContent = "Menyimpan data...";
     try {
       const sheetUrl = window.GGC_SHEETS_WEBHOOK_URL || "";
-      if (sheetUrl) {
-        // Apps Script accepts this simple request without a CORS preflight.
-        await fetch(sheetUrl, { method: "POST", mode: "no-cors", body: JSON.stringify(profile) });
+      if (!sheetUrl || !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(sheetUrl)) {
+        throw new Error("URL Google Sheets belum dikonfigurasi.");
       }
+
+      // Follow the form-to-google-sheets pattern: send named fields as FormData.
+      // Apps Script reads these values from e.parameter (no JSON parsing needed).
+      const formData = new FormData(form);
+      formData.set("name", profile.name);
+      formData.set("email", profile.email);
+      formData.set("phone", profile.phone);
+      formData.set("education", profile.education);
+      await fetch(sheetUrl, { method: "POST", mode: "no-cors", body: formData });
+
       localStorage.setItem(TESTER_PROFILE_KEY, JSON.stringify(profile));
       window.location.replace("index.html");
-    } catch {
+    } catch (error) {
+      console.error("Gagal mengirim data tester:", error);
       message.textContent = "Data belum terkirim. Coba lagi atau hubungi pengelola tester.";
       submit.disabled = false;
       submit.querySelector("span").textContent = "Lanjut ke asesmen";
