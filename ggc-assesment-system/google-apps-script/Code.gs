@@ -1,4 +1,5 @@
-var SPREADSHEET_ID = "1cflKhrSxQ2W7Vn8sn928BqGwa4QEe9b5wE2Os8V-a3s";
+var SPREADSHEET_ID = "1BKo71Yp_FfGYbwcApJAg1nS9ajzKXkg7hln1orFW0Q8";
+var SHEET_NAME = "Sheet1";
 
 // Buka URL /exec di browser untuk memastikan deployment dapat dijangkau.
 function doGet() {
@@ -27,7 +28,7 @@ function doPost(e) {
     if (!education || education.length > 60) throw new Error("Jenjang pendidikan tidak valid");
 
     var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    var sheet = spreadsheet.getSheetByName("Tester") || spreadsheet.insertSheet("Tester");
+    var sheet = spreadsheet.getSheetByName(SHEET_NAME) || spreadsheet.insertSheet(SHEET_NAME);
     if (sheet.getLastRow() === 0) sheet.appendRow(["Waktu daftar", "Nama", "Email", "Nomor telepon", "Jenjang pendidikan"]);
     sheet.appendRow([new Date(), safeCell(name), safeCell(email), safeCell(phone), safeCell(education)]);
     return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
