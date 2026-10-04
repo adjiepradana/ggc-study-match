@@ -39,6 +39,7 @@ async function initApp() {
   loadSavedState();
   ensureQuestionOrder();
   bindGlobalEvents();
+  setupLandingMotion();
   renderSection();
   updateProgressUI();
 
@@ -48,6 +49,71 @@ async function initApp() {
     if (resumeBtn) resumeBtn.style.display = "inline-flex";
     const resumeBtnMobile = document.getElementById("btn-resume-report-mobile");
     if (resumeBtnMobile) resumeBtnMobile.style.display = "inline-flex";
+  }
+}
+
+function setupLandingMotion() {
+  const landing = document.getElementById("landing-view");
+  if (!landing) return;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const revealTargets = landing.querySelectorAll(
+    ".hero-content, .hero-visual, .section-header-center, .dimension-card, .matrix-box, .plan-step-card, .faq-item"
+  );
+
+  if (!reducedMotion && "IntersectionObserver" in window) {
+    landing.classList.add("motion-ready");
+    revealTargets.forEach((element, index) => {
+      element.dataset.reveal = "up";
+      if (element.classList.contains("hero-content")) element.dataset.reveal = "left";
+      if (element.classList.contains("hero-visual")) element.dataset.reveal = "right";
+      if (element.matches(".dimension-card, .matrix-box, .plan-step-card, .faq-item")) {
+        const position = Array.from(element.parentElement.children).indexOf(element) % 4;
+        element.style.setProperty("--reveal-delay", `${position * 85}ms`);
+      } else {
+        element.style.setProperty("--reveal-delay", `${Math.min(index * 35, 140)}ms`);
+      }
+    });
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-revealed");
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.14, rootMargin: "0px 0px -36px 0px" });
+    revealTargets.forEach(element => revealObserver.observe(element));
+  }
+
+  const header = document.querySelector(".site-header");
+  let scrollFrame = 0;
+  const updateScrollEffects = () => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      scrollFrame = 0;
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollable > 0 ? Math.min(100, (window.scrollY / scrollable) * 100) : 0;
+      if (header) header.style.setProperty("--page-scroll-progress", `${progress}%`);
+    });
+  };
+  window.addEventListener("scroll", updateScrollEffects, { passive: true });
+  updateScrollEffects();
+
+  if (!reducedMotion && "IntersectionObserver" in window) {
+    const sections = landing.querySelectorAll("#about, #dimensions, #matrix-system, #why-parents, #faq");
+    const navLinks = document.querySelectorAll(".nav-links .nav-link");
+    const sectionObserver = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      navLinks.forEach(link => {
+        const active = link.hash === `#${visible.target.id}`;
+        link.classList.toggle("is-current", active);
+        if (active) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      });
+    }, { threshold: [0.15, 0.35, 0.6], rootMargin: "-18% 0px -58% 0px" });
+    sections.forEach(section => sectionObserver.observe(section));
   }
 }
 
@@ -117,6 +183,29 @@ function saveState() {
  * Bind DOM events
  */
 function bindGlobalEvents() {
+  document.querySelectorAll(".faq-item").forEach(item => {
+    item.addEventListener("toggle", () => {
+      if (!item.open) return;
+      document.querySelectorAll(".faq-item[open]").forEach(openItem => {
+        if (openItem !== item) openItem.open = false;
+      });
+    });
+  });
+
+  // Expandable examples for the seven assessment dimensions
+  document.querySelectorAll(".dimension-toggle").forEach(button => {
+    button.addEventListener("click", () => {
+      const details = document.getElementById(button.getAttribute("aria-controls"));
+      if (!details) return;
+
+      const expanded = button.getAttribute("aria-expanded") === "true";
+      button.setAttribute("aria-expanded", String(!expanded));
+      details.hidden = expanded;
+      const label = button.querySelector("span");
+      if (label) label.textContent = expanded ? "Lihat contoh aspek" : "Sembunyikan aspek";
+    });
+  });
+
   // Start Assessment Buttons
   const startBtns = document.querySelectorAll(".btn-start-assessment");
   startBtns.forEach(btn => {
@@ -248,10 +337,11 @@ function loadTesterProfile() {
     return null;
   }
   const accountLabel = document.getElementById("auth-user-label");
+  const accountName = document.getElementById("auth-user-name");
   const logoutButton = document.getElementById("btn-logout");
   const mobileLogoutButton = document.getElementById("btn-logout-mobile");
-  if (accountLabel) {
-    accountLabel.textContent = user.name;
+  if (accountLabel && accountName) {
+    accountName.textContent = user.name;
     accountLabel.style.display = "inline-flex";
   }
   if (logoutButton) logoutButton.style.display = "inline-flex";
@@ -557,7 +647,7 @@ function renderReportView(data) {
   if (personalizedName) personalizedName.textContent = displayName;
   document.getElementById("rep-student-grade").textContent = student.grade || "Kelas 12 SMA";
   document.getElementById("rep-report-date").textContent = student.date || new Date().toLocaleDateString("id-ID");
-  document.getElementById("rep-cert-code").textContent = student.codeId || "GGC-STUDYFIT-2026";
+  document.getElementById("rep-cert-code").textContent = student.codeId || "GGC-STUDYMATCH-2026";
 
   // Signature Showcase
   document.getElementById("rep-signature-code").textContent = signature.signatureCode;
@@ -608,7 +698,7 @@ function renderTopFiveCards(topFive) {
             <span class="major-en">${major.englishName} • <span class="badge-cat">${major.category}</span></span>
           </div>
           <div class="fit-score-box">
-            <div class="fit-score-val">${major.fitScore}%</div>
+            <div class="fit-score-val ${major.fitLevelClass}">${major.fitScore}%</div>
             <div class="fit-score-badge ${major.fitLevelClass}">${major.badgeLabel}</div>
           </div>
         </div>
@@ -688,7 +778,7 @@ function renderAllClustersGrid(allResults) {
           ${item.fitScore}%
         </div>
       </div>
-      <div class="cluster-badge-tag">${item.badgeLabel}</div>
+      <div class="cluster-badge-tag ${item.fitLevelClass}">${item.badgeLabel}</div>
       <p class="cluster-mini-desc">${item.whyFit.substring(0, 110)}...</p>
       <div class="cluster-card-footer">
         <button type="button" class="btn-cluster-detail" onclick="showClusterDetailModal('${item.id}')">
@@ -839,6 +929,45 @@ function renderRadarAndDimensionBars(profile) {
     ];
 
     radarSvgContainer.innerHTML = generateSvgRadar(radarData, 420, 420);
+
+    const stage = document.getElementById("radar-chart-stage");
+    const tooltip = document.getElementById("radar-chart-tooltip");
+    const points = radarSvgContainer.querySelectorAll(".radar-profile-point");
+    if (stage && tooltip) {
+      const hideTooltip = () => {
+        tooltip.classList.remove("is-visible");
+        tooltip.setAttribute("aria-hidden", "true");
+      };
+      const showTooltip = point => {
+        const pointRect = point.getBoundingClientRect();
+        const stageRect = stage.getBoundingClientRect();
+        const centerX = pointRect.left + pointRect.width / 2 - stageRect.left;
+        const centerY = pointRect.top + pointRect.height / 2 - stageRect.top;
+        tooltip.textContent = `${point.dataset.label}: ${point.dataset.score}/5`;
+        tooltip.style.left = `${Math.max(70, Math.min(stageRect.width - 70, centerX))}px`;
+        tooltip.style.top = `${Math.max(58, centerY)}px`;
+        tooltip.classList.add("is-visible");
+        tooltip.setAttribute("aria-hidden", "false");
+      };
+
+      points.forEach(point => {
+        point.addEventListener("pointerenter", event => {
+          if (event.pointerType !== "touch") showTooltip(point);
+        });
+        point.addEventListener("pointerleave", event => {
+          if (event.pointerType !== "touch" && document.activeElement !== point) hideTooltip();
+        });
+        point.addEventListener("focus", () => showTooltip(point));
+        point.addEventListener("blur", hideTooltip);
+        point.addEventListener("click", () => showTooltip(point));
+        point.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            showTooltip(point);
+          }
+        });
+      });
+    }
   }
 
   // 2. Dimension Bars for all categories
@@ -900,13 +1029,16 @@ function generateSvgRadar(data, width, height) {
     `;
   }
 
-  const studentPolygon = `<polygon points="${studentPoints.join(" ")}" fill="rgba(11, 70, 50, 0.35)" stroke="#0B4632" stroke-width="2.5"/>`;
+  const studentPath = studentPoints.map((point, index) => `${index === 0 ? "M" : "L"}${point}`).join(" ") + " Z";
+  const studentPolygon = `<path class="radar-profile-area" pathLength="100" d="${studentPath}" fill="rgba(11, 70, 50, 0.35)" fill-opacity="0" stroke="#0B4632" stroke-width="2.5" stroke-dasharray="100" stroke-dashoffset="100"/>`;
 
   // Draw dots on vertices
   let studentDots = "";
-  studentPoints.forEach(pt => {
+  studentPoints.forEach((pt, index) => {
     const [x, y] = pt.split(",");
-    studentDots += `<circle cx="${x}" cy="${y}" r="4" fill="#C5A869" stroke="#0B4632" stroke-width="2"/>`;
+    const label = data[index].label;
+    const score = Math.max(1, Math.min(5, data[index].val)).toFixed(1);
+    studentDots += `<circle class="radar-profile-point" style="--point-delay:${index * 45}ms" cx="${x}" cy="${y}" r="6" fill="#C5A869" stroke="#0B4632" stroke-width="2" data-label="${label}" data-score="${score}" tabindex="0" role="button" aria-label="${label}: ${score} dari 5"/>`;
   });
 
   return `
@@ -947,7 +1079,7 @@ function renderDimensionScoresList(profile) {
     <div class="dim-group-box">
       <h5 class="dim-group-title">${sec.title}</h5>
       <div class="dim-items-grid">
-        ${Object.entries(sec.data).map(([key, val]) => {
+        ${Object.entries(sec.data).map(([key, val], index) => {
           const percent = Math.round((val / 5.0) * 100);
           return `
             <div class="dim-score-item">
@@ -956,7 +1088,7 @@ function renderDimensionScoresList(profile) {
                 <span class="score">${val.toFixed(1)} / 5.0</span>
               </div>
               <div class="dim-progress-bg">
-                <div class="dim-progress-fill" style="width: ${percent}%;"></div>
+                <div class="dim-progress-fill" style="--score-width: ${percent}%; --score-delay: ${index * 35}ms;"></div>
               </div>
             </div>
           `;
@@ -998,7 +1130,7 @@ function copyReportSummary() {
 
   const summary = `
 ========================================
-HASIL GGC STUDY FIT ASSESSMENT™
+HASIL GGC STUDY MATCH ASSESSMENT™
 Go Great Career - Career Readiness Platform
 ========================================
 Nama Siswa: ${student.name} (${student.grade})

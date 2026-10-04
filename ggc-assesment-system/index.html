@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GGC STUDY FIT ASSESSMENT™ — Discover Your Potential. Find Your Direction.</title>
-  <meta name="description" content="GGC STUDY FIT ASSESSMENT™ membantu siswa dan orang tua menemukan jurusan kuliah paling presisi berdasarkan 84 indikator profil diri dan matriks rumpun studi.">
+  <title>GGC STUDY MATCH ASSESSMENT™ — Discover Your Potential. Find Your Direction.</title>
+  <meta name="description" content="GGC STUDY MATCH ASSESSMENT™ membantu siswa dan orang tua menemukan jurusan kuliah paling presisi berdasarkan 84 indikator profil diri dan matriks rumpun studi.">
 
   <!-- Favicon -->
   <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
@@ -40,10 +40,14 @@
         <li><a href="#dimensions" onclick="showView('landing-view')" class="nav-link">7 Dimensi Profil</a></li>
         <li><a href="#matrix-system" onclick="showView('landing-view')" class="nav-link">Dual-Matrix™</a></li>
         <li><a href="#why-parents" onclick="showView('landing-view')" class="nav-link">Nilai untuk Orang Tua</a></li>
+        <li><a href="#faq" onclick="showView('landing-view')" class="nav-link">FAQ</a></li>
       </ul>
 
       <div class="nav-cta-group">
-        <span class="auth-user-label" id="auth-user-label" style="display: none;"></span>
+        <span class="auth-user-label" id="auth-user-label" style="display: none;">
+          <i class="fas fa-user-circle" aria-hidden="true"></i>
+          <span class="auth-user-name" id="auth-user-name"></span>
+        </span>
         <button type="button" class="btn-outline" id="btn-logout" style="display: none;" title="Keluar dari akun">
           <i class="fas fa-right-from-bracket"></i> <span>Keluar</span>
         </button>
@@ -78,6 +82,7 @@
       <li><a href="#dimensions" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-th-list"></i> <span>7 Dimensi Profil</span></a></li>
       <li><a href="#matrix-system" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-network-wired"></i> <span>Dual-Matrix™</span></a></li>
       <li><a href="#why-parents" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-user-friends"></i> <span>Nilai untuk Orang Tua</span></a></li>
+      <li><a href="#faq" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-circle-question"></i> <span>Pertanyaan Umum</span></a></li>
     </ul>
     <div class="drawer-cta-group">
       <button type="button" class="btn-outline" id="btn-logout-mobile" style="width: 100%; justify-content: center; display: none;">
@@ -108,7 +113,7 @@
           <div class="hero-content">
             <div class="badge-assessment-pill">
               <i class="fas fa-certificate"></i>
-              <span>GGC STUDY FIT ASSESSMENT™</span>
+              <span>GGC STUDY MATCH ASSESSMENT™</span>
             </div>
 
             <h1 class="hero-main-title">
@@ -155,16 +160,44 @@
             <div class="hero-card-preview">
               <div class="preview-badge-row">
                 <img src="assets/logo.jpg" alt="Logo GGC" class="card-logo-mini">
-                <span class="badge-cat">GGC Official Diagnostic</span>
+                <span class="preview-example-badge"><i class="fas fa-sparkles" aria-hidden="true"></i> CONTOH HASIL ASESMEN</span>
+              </div>
+
+              <div class="hero-keyvisual" role="img" aria-label="Tujuh dimensi profil diri dipetakan menjadi rekomendasi Study Match">
+                <div class="keyvisual-orbit" aria-hidden="true">
+                  <span class="orbit-node orbit-node-1"></span>
+                  <span class="orbit-node orbit-node-2"></span>
+                  <span class="orbit-node orbit-node-3"></span>
+                  <span class="orbit-node orbit-node-4"></span>
+                  <span class="orbit-node orbit-node-5"></span>
+                  <span class="orbit-node orbit-node-6"></span>
+                  <span class="orbit-node orbit-node-7"></span>
+                  <div class="keyvisual-core">
+                    <i class="fas fa-fingerprint"></i>
+                    <strong>7</strong>
+                    <span>DIMENSI</span>
+                  </div>
+                </div>
+                <div class="keyvisual-connector" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>
+                <div class="keyvisual-destination">
+                  <span class="destination-kicker">ARAH STUDI</span>
+                  <i class="fas fa-compass destination-icon" aria-hidden="true"></i>
+                  <strong>Study Match</strong>
+                  <small>Rekomendasi lebih terarah</small>
+                </div>
+                <div class="keyvisual-dimensions" aria-hidden="true">
+                  <span>Bakat</span><span>Minat</span><span>Gaya kerja</span><span>Nilai</span>
+                  <span>Akademik</span><span>Karier</span><span>Kesiapan</span>
+                </div>
               </div>
 
               <div class="card-sample-user">
                 <div class="user-avatar-circle">
-                  <i class="fas fa-user-graduate"></i>
+                  <i class="fas fa-user-secret"></i>
                 </div>
                 <div>
-                  <h4 class="user-name-title">Ahmad Fajar Pratama</h4>
-                  <span class="user-subtitle">Kelas 12 SMA • Kode ID: GGC-82914</span>
+                  <h4 class="user-name-title">Anonym</h4>
+                  <span class="user-subtitle">Profil ilustrasi • Data disamarkan</span>
                 </div>
               </div>
 
@@ -240,6 +273,8 @@
               <span class="dim-sub-pill">Creative</span>
               <span class="dim-sub-pill">Social</span>
             </div>
+            <button class="dimension-toggle" type="button" aria-expanded="false" aria-controls="dimension-details-a"><span>Lihat contoh aspek</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            <div class="dimension-details" id="dimension-details-a" hidden><strong>Yang dipetakan:</strong> kemampuan memahami informasi, mengolah angka, mengenali pola, dan menghasilkan solusi. <span>Contoh: menyusun argumen, membaca data, atau membayangkan bentuk ruang.</span></div>
           </div>
 
           <!-- Section B -->
@@ -260,6 +295,8 @@
               <span class="dim-sub-pill">Creative</span>
               <span class="dim-sub-pill">Nature/Life</span>
             </div>
+            <button class="dimension-toggle" type="button" aria-expanded="false" aria-controls="dimension-details-b"><span>Lihat contoh aspek</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            <div class="dimension-details" id="dimension-details-b" hidden><strong>Yang dipetakan:</strong> aktivitas dan lingkungan yang membuatmu tertarik untuk terlibat. <span>Contoh: membantu orang, mengeksplorasi ide, mengolah data, atau membuat sesuatu.</span></div>
           </div>
 
           <!-- Section C -->
@@ -278,6 +315,8 @@
               <span class="dim-sub-pill">Social</span>
               <span class="dim-sub-pill">Independence</span>
             </div>
+            <button class="dimension-toggle" type="button" aria-expanded="false" aria-controls="dimension-details-c"><span>Lihat contoh aspek</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            <div class="dimension-details" id="dimension-details-c" hidden><strong>Yang dipetakan:</strong> cara yang paling nyaman bagimu saat belajar dan menyelesaikan tugas. <span>Contoh: mengikuti struktur yang jelas, mencoba pendekatan baru, berkolaborasi, atau bekerja mandiri.</span></div>
           </div>
 
           <!-- Section D -->
@@ -298,6 +337,8 @@
               <span class="dim-sub-pill">Income</span>
               <span class="dim-sub-pill">Contribution</span>
             </div>
+            <button class="dimension-toggle" type="button" aria-expanded="false" aria-controls="dimension-details-d"><span>Lihat contoh aspek</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            <div class="dimension-details" id="dimension-details-d" hidden><strong>Yang dipetakan:</strong> hal-hal yang kamu anggap penting dalam kehidupan dan pekerjaan. <span>Contoh: keamanan, kebebasan, pencapaian, penghasilan, atau kontribusi sosial.</span></div>
           </div>
 
           <!-- Section E -->
@@ -318,6 +359,8 @@
               <span class="dim-sub-pill">Art/Design</span>
               <span class="dim-sub-pill">Technology</span>
             </div>
+            <button class="dimension-toggle" type="button" aria-expanded="false" aria-controls="dimension-details-e"><span>Lihat contoh aspek</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            <div class="dimension-details" id="dimension-details-e" hidden><strong>Yang dipetakan:</strong> mata pelajaran yang terasa lebih kuat atau lebih nyaman untuk dipelajari. <span>Contoh: bahasa, matematika, sains, ilmu sosial, desain, atau teknologi.</span></div>
           </div>
 
           <!-- Section F -->
@@ -338,14 +381,16 @@
               <span class="dim-sub-pill">Helping</span>
               <span class="dim-sub-pill">Creating</span>
             </div>
+            <button class="dimension-toggle" type="button" aria-expanded="false" aria-controls="dimension-details-f"><span>Lihat contoh aspek</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            <div class="dimension-details" id="dimension-details-f" hidden><strong>Yang dipetakan:</strong> jenis kontribusi dan lingkungan kerja yang ingin kamu jelajahi. <span>Contoh: bidang teknologi, bisnis, informasi, layanan, atau pekerjaan kreatif.</span></div>
           </div>
 
           <!-- Section G -->
-          <div class="dimension-card" style="border-color: var(--gold);">
+          <div class="dimension-card">
             <div class="dim-card-header">
-              <div class="dim-icon-wrapper" style="background: var(--gold-subtle); color: var(--gold-dark);"><i class="fas fa-flag-checkered"></i></div>
+              <div class="dim-icon-wrapper"><i class="fas fa-flag-checkered"></i></div>
               <div>
-                <span class="dim-card-code" style="color: var(--primary);">BAGIAN G • 6 ITEM (KRUSIAL)</span>
+                <span class="dim-card-code">BAGIAN G • 6 ITEM (KRUSIAL)</span>
                 <h3 class="dim-card-title">Readiness Index</h3>
               </div>
             </div>
@@ -358,6 +403,8 @@
               <span class="dim-sub-pill">Decision confidence</span>
               <span class="dim-sub-pill">Commitment</span>
             </div>
+            <button class="dimension-toggle" type="button" aria-expanded="false" aria-controls="dimension-details-g"><span>Lihat contoh aspek</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            <div class="dimension-details" id="dimension-details-g" hidden><strong>Yang dipetakan:</strong> kesiapanmu mengenali diri, mencari informasi, dan mengambil keputusan studi. <span>Contoh: membandingkan kurikulum, mencari sumber tepercaya, dan menyusun pilihan alternatif.</span></div>
           </div>
 
         </div>
@@ -415,7 +462,7 @@
 
         <div class="parent-action-plan-box" style="margin-bottom: 0;">
           <div class="plan-header">
-            <h3>3 Manfaat Utama Laporan GGC Study Fit:</h3>
+            <h3>3 Manfaat Utama Laporan GGC Study Match:</h3>
           </div>
           <div class="plan-steps-grid">
             <div class="plan-step-card">
@@ -439,6 +486,49 @@
               <i class="fas fa-arrow-right"></i> <span>Mulai Asesmen Sekarang</span>
             </button>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Frequently Asked Questions -->
+    <section class="section-wrapper bg-alt" id="faq">
+      <div class="container">
+        <div class="section-header-center">
+          <span class="section-kicker">ADA YANG INGIN DITANYAKAN?</span>
+          <h2 class="section-heading">Pertanyaan yang Sering Ditanyakan</h2>
+          <p class="section-subtext">Informasi singkat agar kamu bisa memulai asesmen dengan lebih nyaman.</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary><span>Apa itu GGC Study Match?</span><i class="fas fa-plus" aria-hidden="true"></i></summary>
+            <div class="faq-answer"><div class="faq-answer-inner"><p>GGC Study Match adalah asesmen untuk membantu mengenali potensi, minat, gaya belajar, dan kesiapanmu, lalu mencocokkannya dengan 18 rumpun program studi.</p></div></div>
+          </details>
+          <details class="faq-item">
+            <summary><span>Berapa banyak pertanyaan yang perlu dijawab?</span><i class="fas fa-plus" aria-hidden="true"></i></summary>
+            <div class="faq-answer"><div class="faq-answer-inner"><p>Ada 84 pernyataan yang dibagi menjadi 7 halaman. Setiap halaman berisi 12 pernyataan. Kamu bisa melihat progres jawaban selama mengerjakan.</p></div></div>
+          </details>
+          <details class="faq-item">
+            <summary><span>Apakah ada jawaban yang benar atau salah?</span><i class="fas fa-plus" aria-hidden="true"></i></summary>
+            <div class="faq-answer"><div class="faq-answer-inner"><p>Tidak ada jawaban benar atau salah. Pilih respons yang paling sesuai dengan dirimu saat ini, bukan yang menurutmu paling diharapkan orang lain.</p></div></div>
+          </details>
+          <details class="faq-item">
+            <summary><span>Apakah saya perlu membuat kata sandi?</span><i class="fas fa-plus" aria-hidden="true"></i></summary>
+            <div class="faq-answer"><div class="faq-answer-inner"><p>Tidak. Untuk uji coba ini, halaman masuk hanya meminta nama, email, nomor telepon, dan jenjang pendidikan.</p></div></div>
+          </details>
+          <details class="faq-item">
+            <summary><span>Apakah hasilnya menentukan jurusan yang harus saya pilih?</span><i class="fas fa-plus" aria-hidden="true"></i></summary>
+            <div class="faq-answer"><div class="faq-answer-inner"><p>Hasilnya adalah bahan eksplorasi dan diskusi, bukan keputusan mutlak. Pertimbangkan juga minatmu, informasi kurikulum, kondisi pribadi, serta diskusi bersama orang tua atau konselor.</p></div></div>
+          </details>
+          <details class="faq-item">
+            <summary><span>Bagaimana data dan progres jawaban saya disimpan?</span><i class="fas fa-plus" aria-hidden="true"></i></summary>
+            <div class="faq-answer"><div class="faq-answer-inner"><p>Data pendaftaran dicatat untuk keperluan uji coba. Progres jawaban asesmen tersimpan di browser pada perangkat yang kamu gunakan, jadi gunakan browser dan perangkat yang sama untuk melanjutkan.</p></div></div>
+          </details>
+        </div>
+
+        <div class="faq-cta">
+          <span>Sudah siap mengenali potensimu?</span>
+          <button type="button" class="btn-primary btn-start-assessment"><i class="fas fa-play-circle" aria-hidden="true"></i> Mulai Asesmen</button>
         </div>
       </div>
     </section>
@@ -514,6 +604,7 @@
       </div>
 
     </div>
+
   </main>
 
   <!-- =========================================================================
@@ -552,7 +643,7 @@
             <div class="rep-brand-block">
               <img src="assets/logo.jpg" alt="Logo Go Great Career" class="rep-logo-img">
               <div class="rep-title-group">
-                <h1>GGC STUDY FIT ASSESSMENT™</h1>
+                <h1>GGC STUDY MATCH ASSESSMENT™</h1>
                 <p>OFFICIAL STUDENT & PARENT DIAGNOSTIC REPORT</p>
                 <p class="rep-personalized-title">Hasil asesmen untuk <strong id="rep-report-student-name">Nama Siswa</strong></p>
               </div>
@@ -611,7 +702,7 @@
 
           <!-- 4. Top 5 Major Recommendations -->
           <div class="rep-section-heading">
-            <h2><i class="fas fa-trophy text-gold"></i> TOP 5 REKOMENDASI JURUSAN (STUDY FIT)</h2>
+            <h2><i class="fas fa-trophy text-gold"></i> TOP 5 REKOMENDASI JURUSAN (STUDY MATCH)</h2>
             <p>Hasil kalkulasi perkalian Person Profile dengan Study Profile Matrix berbobot spesifik.</p>
           </div>
 
@@ -665,8 +756,11 @@
           <div class="charts-analytics-layout">
             <div class="radar-chart-card">
               <h4>Radar Potensi Bakat & Minat</h4>
-              <div id="rep-radar-chart-container">
-                <!-- SVG Radar generated here -->
+              <div class="radar-chart-stage" id="radar-chart-stage">
+                <div id="rep-radar-chart-container">
+                  <!-- SVG Radar generated here -->
+                </div>
+                <div class="radar-chart-tooltip" id="radar-chart-tooltip" role="status" aria-live="polite" aria-hidden="true"></div>
               </div>
             </div>
 
@@ -726,7 +820,7 @@
           <!-- 9. Official Signoff & Verification Footer -->
           <div class="rep-signoff-footer">
             <div class="signoff-legal">
-              <strong>Catatan Validitas:</strong> GGC STUDY FIT ASSESSMENT™ dikembangkan oleh Go Great Career sebagai instrumen diagnostik peminatan studi berbasis pendekatan psikometrik terpadu. Hasil asesmen ini dirancang sebagai panduan pengambilan keputusan strategis bersama orang tua dan pendidik.
+              <strong>Catatan Validitas:</strong> GGC STUDY MATCH ASSESSMENT™ dikembangkan oleh Go Great Career sebagai instrumen diagnostik peminatan studi berbasis pendekatan psikometrik terpadu. Hasil asesmen ini dirancang sebagai panduan pengambilan keputusan strategis bersama orang tua dan pendidik.
             </div>
 
             <div class="signoff-seal-box">
@@ -741,6 +835,7 @@
 
       </div>
     </div>
+
   </main>
 
   <!-- =========================================================================
@@ -833,12 +928,13 @@
         </div>
 
         <div class="footer-col">
-          <h4>GGC Study Fit</h4>
+          <h4>GGC Study Match</h4>
           <ul>
             <li><a href="javascript:void(0)" onclick="openStudentModal()">Mulai Asesmen Baru</a></li>
             <li><a href="#dimensions">7 Dimensi Penilaian</a></li>
             <li><a href="#matrix-system">Algoritma Dual-Matrix</a></li>
             <li><a href="#why-parents">Panduan Orang Tua</a></li>
+            <li><a href="#faq">Pertanyaan Umum</a></li>
           </ul>
         </div>
 
@@ -854,7 +950,7 @@
       </div>
 
       <div class="footer-bottom">
-        <div>© 2026 GO GREAT CAREER — All Rights Reserved. GGC STUDY FIT ASSESSMENT™ is a registered framework.</div>
+        <div>© 2026 GO GREAT CAREER — All Rights Reserved. GGC STUDY MATCH ASSESSMENT™ is a registered framework.</div>
         <div>Discover Your Potential. Find Your Direction.</div>
       </div>
     </div>

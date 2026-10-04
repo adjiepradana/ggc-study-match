@@ -1,4 +1,4 @@
-# GGC STUDY FIT ASSESSMENT™
+# GGC STUDY MATCH ASSESSMENT™
 > **Discover Your Potential. Find Your Direction.**  
 > Official Platform by **Go Great Career — Career Readiness Platform**
 
@@ -84,4 +84,4 @@ d:\GGC\
 
 ---
 
-*© 2026 GO GREAT CAREER — All Rights Reserved. GGC STUDY FIT ASSESSMENT™.*
+*© 2026 GO GREAT CAREER — All Rights Reserved. GGC STUDY MATCH ASSESSMENT™.*

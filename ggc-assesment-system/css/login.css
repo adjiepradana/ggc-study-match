@@ -9,7 +9,7 @@
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 * { box-sizing: border-box; }
-body { min-width: 320px; min-height: 100vh; margin: 0; color: var(--ink); background: #f6f8f5; }
+body { min-width: 320px; min-height: 100vh; margin: 0; color: var(--ink); background: radial-gradient(ellipse at 92% 12%, rgba(197,168,105,.18), transparent 30%), radial-gradient(ellipse at 12% 92%, rgba(171,214,188,.25), transparent 34%), linear-gradient(135deg, #f6faf7, #fbf8f0 58%, #f2f7f4); }
 button, input, select { font: inherit; }
 .auth-shell { min-height: 100vh; display: grid; grid-template-columns: minmax(360px, .92fr) minmax(440px, 1.08fr); }
 .auth-visual { position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 42px clamp(32px, 6vw, 88px); overflow: hidden; color: white; background: radial-gradient(ellipse at 88% 18%, rgba(197,168,105,.18), transparent 28%), linear-gradient(145deg, #063424, #0b4632 62%, #0b392c); }
