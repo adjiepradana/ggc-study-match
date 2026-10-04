@@ -3,7 +3,7 @@
  * Copyright © Go Great Career - Career Readiness Platform
  */
 
-const STORAGE_KEY = "ggc_assessment_v1";
+let STORAGE_KEY = "ggc_assessment_v1";
 
 const AppState = {
   student: {
@@ -13,8 +13,10 @@ const AppState = {
     initialGoal: ""
   },
   currentSectionIndex: 0,
+  questionOrder: [],
   answers: {},
   reportData: null,
+  accountUser: null,
   activeFilter: "all"
 };
 
@@ -23,8 +25,19 @@ document.addEventListener("DOMContentLoaded", () => {
   initApp();
 });
 
-function initApp() {
+async function initApp() {
+  const accountUser = loadTesterProfile();
+  if (!accountUser) return;
+  AppState.accountUser = accountUser;
+  AppState.student = {
+    ...AppState.student,
+    name: accountUser.name,
+    grade: accountUser.education,
+    contact: accountUser.phone
+  };
+  STORAGE_KEY = `ggc_assessment_v1_${encodeURIComponent(accountUser.email)}`;
   loadSavedState();
+  ensureQuestionOrder();
   bindGlobalEvents();
   renderSection();
   updateProgressUI();
@@ -49,10 +62,39 @@ function loadSavedState() {
       if (parsed.answers) AppState.answers = parsed.answers;
       if (parsed.student) AppState.student = { ...AppState.student, ...parsed.student };
       if (parsed.currentSectionIndex !== undefined) AppState.currentSectionIndex = parsed.currentSectionIndex;
+      if (Array.isArray(parsed.questionOrder)) AppState.questionOrder = parsed.questionOrder;
     }
   } catch (e) {
     console.warn("Storage load error:", e);
   }
+}
+
+const QUESTIONS_PER_PAGE = 12;
+
+function ensureQuestionOrder() {
+  const allItems = ASSESSMENT_DATA.sections.flatMap(section => section.items);
+  const validSavedOrder = AppState.questionOrder.length === allItems.length &&
+    new Set(AppState.questionOrder).size === allItems.length &&
+    allItems.every(item => AppState.questionOrder.includes(item.id));
+
+  if (!validSavedOrder) {
+    AppState.questionOrder = allItems.map(item => item.id);
+    for (let i = AppState.questionOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [AppState.questionOrder[i], AppState.questionOrder[j]] = [AppState.questionOrder[j], AppState.questionOrder[i]];
+    }
+    saveState();
+  }
+}
+
+function getAssessmentPages() {
+  const itemsById = new Map(ASSESSMENT_DATA.sections.flatMap(section => section.items).map(item => [item.id, item]));
+  const orderedItems = AppState.questionOrder.map(id => itemsById.get(id)).filter(Boolean);
+  const pages = [];
+  for (let i = 0; i < orderedItems.length; i += QUESTIONS_PER_PAGE) {
+    pages.push(orderedItems.slice(i, i + QUESTIONS_PER_PAGE));
+  }
+  return pages;
 }
 
 /**
@@ -63,7 +105,8 @@ function saveState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       student: AppState.student,
       answers: AppState.answers,
-      currentSectionIndex: AppState.currentSectionIndex
+      currentSectionIndex: AppState.currentSectionIndex,
+      questionOrder: AppState.questionOrder
     }));
   } catch (e) {
     console.warn("Storage save error:", e);
@@ -78,6 +121,15 @@ function bindGlobalEvents() {
   const startBtns = document.querySelectorAll(".btn-start-assessment");
   startBtns.forEach(btn => {
     btn.addEventListener("click", () => openStudentModal());
+  });
+
+  const logoutButtons = document.querySelectorAll("#btn-logout, #btn-logout-mobile");
+  logoutButtons.forEach(logoutButton => {
+    logoutButton.addEventListener("click", async () => {
+      logoutButton.disabled = true;
+      localStorage.removeItem("ggc_tester_profile_v1");
+      window.location.replace("/login.html");
+    });
   });
 
   // Modal Student Form
@@ -107,17 +159,6 @@ function bindGlobalEvents() {
   if (btnNext) {
     btnNext.addEventListener("click", () => {
       handleNextSection();
-    });
-  }
-
-  // Quick Demo Fill Profiles
-  const demoSelector = document.getElementById("demo-profile-select");
-  if (demoSelector) {
-    demoSelector.addEventListener("change", (e) => {
-      if (e.target.value) {
-        applyDemoProfile(e.target.value);
-        e.target.value = "";
-      }
     });
   }
 
@@ -189,13 +230,33 @@ function bindGlobalEvents() {
     
     if (["1", "2", "3", "4", "5"].includes(e.key)) {
       // Find the first unanswered item in current view or focused item
-      const currentSection = ASSESSMENT_DATA.sections[AppState.currentSectionIndex];
-      const unanswered = currentSection.items.find(it => !AppState.answers[it.id]);
+      const currentItems = getAssessmentPages()[AppState.currentSectionIndex] || [];
+      const unanswered = currentItems.find(it => !AppState.answers[it.id]);
       if (unanswered) {
         selectOption(unanswered.id, parseInt(e.key, 10));
       }
     }
   });
+}
+
+function loadTesterProfile() {
+  let user;
+  try { user = JSON.parse(localStorage.getItem("ggc_tester_profile_v1") || "null"); }
+  catch { user = null; }
+  if (!user?.email) {
+    window.location.replace("/login.html");
+    return null;
+  }
+  const accountLabel = document.getElementById("auth-user-label");
+  const logoutButton = document.getElementById("btn-logout");
+  const mobileLogoutButton = document.getElementById("btn-logout-mobile");
+  if (accountLabel) {
+    accountLabel.textContent = user.name;
+    accountLabel.style.display = "inline-flex";
+  }
+  if (logoutButton) logoutButton.style.display = "inline-flex";
+  if (mobileLogoutButton) mobileLogoutButton.style.display = "inline-flex";
+  return user;
 }
 
 /**
@@ -229,7 +290,7 @@ function openStudentModal() {
   const modal = document.getElementById("modal-onboarding");
   if (modal) {
     // Pre-populate if exists
-    document.getElementById("input-student-name").value = AppState.student.name || "";
+    document.getElementById("input-student-name").value = AppState.student.name || AppState.accountUser?.name || "";
     document.getElementById("input-student-grade").value = AppState.student.grade || "Kelas 12 SMA";
     document.getElementById("input-student-contact").value = AppState.student.contact || "";
     document.getElementById("input-student-goal").value = AppState.student.initialGoal || "";
@@ -274,31 +335,26 @@ function handleStudentOnboardingSubmit() {
 }
 
 /**
- * Render Current Assessment Section (A - G)
+ * Render a neutral page of shuffled assessment questions
  */
 function renderSection() {
-  const section = ASSESSMENT_DATA.sections[AppState.currentSectionIndex];
-  if (!section) return;
+  const pages = getAssessmentPages();
+  const items = pages[AppState.currentSectionIndex];
+  if (!items) return;
 
   // Update Section Header Info
-  const secBadge = document.getElementById("section-badge");
   const secTitle = document.getElementById("section-title");
   const secSubtitle = document.getElementById("section-subtitle");
   const secDesc = document.getElementById("section-description");
 
-  if (secBadge) secBadge.textContent = `BAGIAN ${section.code} DARI 7`;
-  if (secTitle) secTitle.textContent = section.title;
-  if (secSubtitle) secSubtitle.textContent = section.subtitle;
-  if (secDesc) secDesc.textContent = section.description;
+  if (secTitle) secTitle.textContent = "Pernyataan tentang diri Anda";
+  if (secSubtitle) secSubtitle.textContent = "Jawab sesuai dengan pengalaman dan diri Anda";
+  if (secDesc) secDesc.textContent = "Pilih jawaban yang paling menggambarkan diri Anda. Soal disajikan dalam urutan campuran.";
 
   // Render Subdimension Tags Info
   const tagsContainer = document.getElementById("section-subdims-tags");
   if (tagsContainer) {
-    tagsContainer.innerHTML = section.subdimensions.map(sub => `
-      <span class="subdim-pill" title="${sub.desc}">
-        <strong>${sub.key}</strong>: ${sub.name}
-      </span>
-    `).join("");
+    tagsContainer.innerHTML = "";
   }
 
   // Render Items List
@@ -307,7 +363,7 @@ function renderSection() {
 
   itemsContainer.innerHTML = "";
 
-  section.items.forEach((item, idx) => {
+  items.forEach((item, idx) => {
     const currentVal = AppState.answers[item.id] || null;
     const itemCard = document.createElement("div");
     itemCard.className = `assessment-item-card ${currentVal ? "answered" : ""}`;
@@ -315,9 +371,7 @@ function renderSection() {
 
     itemCard.innerHTML = `
       <div class="item-card-header">
-        <span class="item-id-badge">${item.id}</span>
-        <span class="item-sub-badge">${item.sub}</span>
-        <span class="item-number-seq">Pertanyaan ${idx + 1} dari ${section.items.length}</span>
+        <span class="item-number-seq">Pernyataan ${AppState.currentSectionIndex * QUESTIONS_PER_PAGE + idx + 1} dari ${AppState.questionOrder.length}</span>
       </div>
       <p class="item-statement">${escapeHtml(item.text)}</p>
       
@@ -362,11 +416,11 @@ function renderSection() {
   }
 
   if (btnNext) {
-    if (AppState.currentSectionIndex === ASSESSMENT_DATA.sections.length - 1) {
+    if (AppState.currentSectionIndex === pages.length - 1) {
       btnNext.innerHTML = `<span>Hitung & Lihat Hasil Asesmen</span> <i class="fas fa-chart-pie"></i>`;
       btnNext.classList.add("btn-finish");
     } else {
-      btnNext.innerHTML = `<span>Lanjut ke Bagian ${ASSESSMENT_DATA.sections[AppState.currentSectionIndex + 1].code}</span> <i class="fas fa-arrow-right"></i>`;
+      btnNext.innerHTML = `<span>Lanjut</span> <i class="fas fa-arrow-right"></i>`;
       btnNext.classList.remove("btn-finish");
     }
   }
@@ -398,52 +452,15 @@ function selectOption(itemId, value) {
   }
 
   updateProgressUI();
-  updateStepTabsState();
-}
-
-/**
- * Render Step Nav Indicator Tabs
- */
-function renderStepTabs() {
-  const navContainer = document.getElementById("assessment-step-tabs");
-  if (!navContainer) return;
-
-  navContainer.innerHTML = ASSESSMENT_DATA.sections.map((sec, idx) => {
-    const answeredCount = sec.items.filter(it => AppState.answers[it.id] !== undefined).length;
-    const isCompleted = answeredCount === sec.items.length;
-    const isCurrent = idx === AppState.currentSectionIndex;
-
-    return `
-      <button type="button" 
-              class="step-tab-btn ${isCurrent ? "active" : ""} ${isCompleted ? "completed" : ""}"
-              onclick="jumpToSection(${idx})">
-        <span class="step-num">${sec.code}</span>
-        <span class="step-label">${sec.id.toUpperCase()}</span>
-        <span class="step-badge">${answeredCount}/${sec.items.length}</span>
-      </button>
-    `;
-  }).join("");
-}
-
-function updateStepTabsState() {
-  renderStepTabs();
-}
-
-function jumpToSection(index) {
-  if (index >= 0 && index < ASSESSMENT_DATA.sections.length) {
-    AppState.currentSectionIndex = index;
-    saveState();
-    renderSection();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
 }
 
 /**
  * Handle Next Section Button
  */
 function handleNextSection() {
-  const currentSection = ASSESSMENT_DATA.sections[AppState.currentSectionIndex];
-  const unanswered = currentSection.items.filter(it => !AppState.answers[it.id]);
+  const pages = getAssessmentPages();
+  const currentItems = pages[AppState.currentSectionIndex] || [];
+  const unanswered = currentItems.filter(it => !AppState.answers[it.id]);
 
   if (unanswered.length > 0) {
     // Scroll to the first unanswered item
@@ -454,12 +471,12 @@ function handleNextSection() {
       missingCard.classList.add("highlight-pulse");
       setTimeout(() => missingCard.classList.remove("highlight-pulse"), 2500);
     }
-    showNotification(`Masih ada ${unanswered.length} pernyataan di bagian ini yang belum dijawab.`, "warning");
+    showNotification(`Masih ada ${unanswered.length} pernyataan di halaman ini yang belum dijawab.`, "warning");
     return;
   }
 
   // If on last section, finish assessment
-  if (AppState.currentSectionIndex === ASSESSMENT_DATA.sections.length - 1) {
+  if (AppState.currentSectionIndex === pages.length - 1) {
     // Check if ALL 84 items are answered
     const totalAnswered = Object.keys(AppState.answers).length;
     if (totalAnswered < 84) {
@@ -471,8 +488,16 @@ function handleNextSection() {
     AppState.currentSectionIndex++;
     saveState();
     renderSection();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToFirstQuestion();
   }
+}
+
+function scrollToFirstQuestion() {
+  requestAnimationFrame(() => {
+    const firstQuestion = document.querySelector("#assessment-items-container .assessment-item-card");
+    if (!firstQuestion) return;
+    firstQuestion.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 }
 
 /**
@@ -526,7 +551,10 @@ function renderReportView(data) {
   const readiness = personProfile.readinessAnalysis;
 
   // Student Info Header
-  document.getElementById("rep-student-name").textContent = student.name || "Siswa Teladan";
+  const displayName = student.name || "Siswa Teladan";
+  document.getElementById("rep-student-name").textContent = displayName;
+  const personalizedName = document.getElementById("rep-report-student-name");
+  if (personalizedName) personalizedName.textContent = displayName;
   document.getElementById("rep-student-grade").textContent = student.grade || "Kelas 12 SMA";
   document.getElementById("rep-report-date").textContent = student.date || new Date().toLocaleDateString("id-ID");
   document.getElementById("rep-cert-code").textContent = student.codeId || "GGC-STUDYFIT-2026";
@@ -936,85 +964,6 @@ function renderDimensionScoresList(profile) {
       </div>
     </div>
   `).join("");
-}
-
-/**
- * Apply Demo Profiles for Quick Testing
- */
-function applyDemoProfile(profileType) {
-  const answers = {};
-
-  if (profileType === "tech_ai") {
-    // IT & Data Science profile
-    ASSESSMENT_DATA.sections.forEach(sec => {
-      sec.items.forEach(it => {
-        if (["Numerical", "Analytical", "Data", "Things", "Math", "Technology", "Information"].includes(it.sub)) {
-          answers[it.id] = Math.random() > 0.3 ? 5 : 4;
-        } else if (["Verbal", "Social", "People", "Helping", "ArtDesign"].includes(it.sub)) {
-          answers[it.id] = Math.random() > 0.5 ? 3 : 2;
-        } else {
-          answers[it.id] = 4;
-        }
-      });
-    });
-    AppState.student.name = "Ahmad Fajar Pratama";
-    AppState.student.grade = "Kelas 12 IPA";
-    AppState.student.initialGoal = "Teknik Informatika / Data Science";
-  } else if (profileType === "psychology") {
-    // Psychology & People profile
-    ASSESSMENT_DATA.sections.forEach(sec => {
-      sec.items.forEach(it => {
-        if (["Verbal", "Analytical", "Social", "People", "Ideas", "Meaning", "Helping"].includes(it.sub)) {
-          answers[it.id] = Math.random() > 0.2 ? 5 : 4;
-        } else if (["Numerical", "Things", "Math"].includes(it.sub)) {
-          answers[it.id] = Math.random() > 0.4 ? 3 : 2;
-        } else {
-          answers[it.id] = 4;
-        }
-      });
-    });
-    AppState.student.name = "Nadia Anindita Putri";
-    AppState.student.grade = "Kelas 12 IPS";
-    AppState.student.initialGoal = "Psikologi / Human Resources";
-  } else if (profileType === "medicine") {
-    // Medicine & Health profile
-    ASSESSMENT_DATA.sections.forEach(sec => {
-      sec.items.forEach(it => {
-        if (["NatureLife", "Science", "Analytical", "Meaning", "Helping", "Structure"].includes(it.sub)) {
-          answers[it.id] = Math.random() > 0.2 ? 5 : 4;
-        } else if (["ArtDesign", "Spatial"].includes(it.sub)) {
-          answers[it.id] = 3;
-        } else {
-          answers[it.id] = 4;
-        }
-      });
-    });
-    AppState.student.name = "dr. Aris Munandar (Simulasi Siswa)";
-    AppState.student.grade = "Kelas 12 IPA Unggulan";
-    AppState.student.initialGoal = "Kedokteran Umum";
-  } else if (profileType === "creative_arts") {
-    // Design & Creative Arts profile
-    ASSESSMENT_DATA.sections.forEach(sec => {
-      sec.items.forEach(it => {
-        if (["Creative", "Spatial", "ArtDesign", "Exploration", "Freedom", "Creating"].includes(it.sub)) {
-          answers[it.id] = 5;
-        } else if (["Structure", "Numerical", "Math", "Security"].includes(it.sub)) {
-          answers[it.id] = 2;
-        } else {
-          answers[it.id] = 3;
-        }
-      });
-    });
-    AppState.student.name = "Kayla Aurelia";
-    AppState.student.grade = "Kelas 12 SMA Seni / Umum";
-    AppState.student.initialGoal = "Desain Komunikasi Visual";
-  }
-
-  AppState.answers = answers;
-  saveState();
-  updateProgressUI();
-  renderSection();
-  showNotification(`Profil demo "${profileType}" berhasil diisikan (84/84 item)!`);
 }
 
 /**

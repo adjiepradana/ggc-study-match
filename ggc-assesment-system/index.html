@@ -43,11 +43,12 @@
       </ul>
 
       <div class="nav-cta-group">
+        <span class="auth-user-label" id="auth-user-label" style="display: none;"></span>
+        <button type="button" class="btn-outline" id="btn-logout" style="display: none;" title="Keluar dari akun">
+          <i class="fas fa-right-from-bracket"></i> <span>Keluar</span>
+        </button>
         <button type="button" class="btn-outline" id="btn-resume-report" style="display: none;" onclick="showView('report-view')">
           <i class="fas fa-file-alt"></i> <span>Lihat Laporan</span>
-        </button>
-        <button type="button" class="btn-primary btn-start-assessment">
-          <span>Mulai Asesmen</span> <i class="fas fa-arrow-right"></i>
         </button>
       </div>
 
@@ -79,6 +80,9 @@
       <li><a href="#why-parents" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-user-friends"></i> <span>Nilai untuk Orang Tua</span></a></li>
     </ul>
     <div class="drawer-cta-group">
+      <button type="button" class="btn-outline" id="btn-logout-mobile" style="width: 100%; justify-content: center; display: none;">
+        <i class="fas fa-right-from-bracket"></i> <span>Keluar dari akun</span>
+      </button>
       <button type="button" class="btn-primary btn-start-assessment" style="width: 100%; justify-content: center;" onclick="closeMobileDrawer();">
         <span>Mulai Asesmen</span> <i class="fas fa-arrow-right"></i>
       </button>
@@ -123,9 +127,6 @@
             <div class="hero-actions">
               <button type="button" class="btn-primary btn-start-assessment">
                 <i class="fas fa-play-circle"></i> <span>Mulai Asesmen 84 Item</span>
-              </button>
-              <button type="button" class="btn-outline" onclick="applyDemoProfile('tech_ai'); processAndShowReport();">
-                <i class="fas fa-laptop-code"></i> <span>Lihat Contoh Laporan AI/Tech</span>
               </button>
             </div>
 
@@ -375,26 +376,27 @@
         </div>
 
         <div class="matrix-explainer-grid">
-          
-          <div class="matrix-box accent-gold">
-            <h3><i class="fas fa-fingerprint text-gold"></i> MATRIX 1: PERSON PROFILE</h3>
-            <p>Sistem menghitung skor rata-rata subdimensi dari 84 item sehingga melahirkan profil otentik siswa:</p>
+          <article class="matrix-box accent-gold">
+            <span class="matrix-card-kicker">TAHAP 1 · MEMAHAMI DIRIMU</span>
+            <h3><i class="fas fa-fingerprint text-gold" aria-hidden="true"></i><span>Matrix 1: Person Profile</span></h3>
+            <p>Jawabanmu di 84 pertanyaan dirangkum menjadi gambaran kekuatan dan kesiapan diri.</p>
             <ul class="matrix-feature-list">
-              <li><i class="fas fa-check-circle"></i> <strong>Subskor Presisi:</strong> Verbal, Analytical, Numerical, Spatial, Creative, Social terukur dalam skala 1.0 – 5.0.</li>
-              <li><i class="fas fa-check-circle"></i> <strong>Your Potential Signature:</strong> Menemukan 3 kombinasi kekuatan tertinggi siswa (misal: <em>Analytical + Social + Verbal</em>).</li>
-              <li><i class="fas fa-check-circle"></i> <strong>Readiness Diagnostic:</strong> Memisahkan antara kecocokan minat dengan kematangan kesiapan memilih.</li>
+              <li><span class="matrix-feature-icon"><i class="fas fa-check" aria-hidden="true"></i></span><div class="matrix-feature-copy"><strong>Profil kekuatan</strong><span>Skor verbal, analitis, numerik, spasial, kreatif, dan sosial dalam skala 1–5.</span></div></li>
+              <li><span class="matrix-feature-icon"><i class="fas fa-check" aria-hidden="true"></i></span><div class="matrix-feature-copy"><strong>Potensi unikmu</strong><span>Temukan kombinasi kekuatan utama, seperti <em>Analytical + Social + Verbal</em>.</span></div></li>
+              <li><span class="matrix-feature-icon"><i class="fas fa-check" aria-hidden="true"></i></span><div class="matrix-feature-copy"><strong>Kesiapan memilih</strong><span>Lihat kesiapanmu dalam mengeksplorasi dan menentukan arah studi.</span></div></li>
             </ul>
-          </div>
+          </article>
 
-          <div class="matrix-box accent-primary">
-            <h3><i class="fas fa-sitemap text-emerald"></i> MATRIX 2: STUDY PROFILE</h3>
-            <p>Setiap dari 18 rumpun jurusan memiliki <em>Expected Weighted Profile</em> yang dikalibrasi sesuai tuntutan dunia riil:</p>
+          <article class="matrix-box accent-primary">
+            <span class="matrix-card-kicker">TAHAP 2 · MENEMUKAN PILIHAN STUDI</span>
+            <h3><i class="fas fa-sitemap text-emerald" aria-hidden="true"></i><span>Matrix 2: Study Profile</span></h3>
+            <p>Profilmu dicocokkan dengan kebutuhan dari 18 rumpun jurusan dan bidang studi.</p>
             <ul class="matrix-feature-list">
-              <li><i class="fas fa-check-circle"></i> <strong>Profil Ekspektasi:</strong> Psikologi (People ↑↑, Analytical ↑↑), Teknik (Numerical ↑↑, Things ↑↑), Desain (Creative ↑↑, Spatial ↑↑).</li>
-              <li><i class="fas fa-check-circle"></i> <strong>Student × Study Matrix:</strong> Perhitungan kecocokan multidimensi menghasilkan kategori Very Strong, Strong, Potential, atau Explore.</li>
-              <li><i class="fas fa-check-circle"></i> <strong>Defensible & Ilmiah:</strong> Memberi penjelasan <em>"Why This Fit"</em> dan peringatan dini <em>"What To Watch Out For"</em>.</li>
+              <li><span class="matrix-feature-icon"><i class="fas fa-check" aria-hidden="true"></i></span><div class="matrix-feature-copy"><strong>Kebutuhan jurusan</strong><span>Setiap bidang punya kombinasi kekuatan yang berbeda—misalnya numerik untuk teknik dan kreativitas untuk desain.</span></div></li>
+              <li><span class="matrix-feature-icon"><i class="fas fa-check" aria-hidden="true"></i></span><div class="matrix-feature-copy"><strong>Kecocokan yang menyeluruh</strong><span>Hasil menunjukkan pilihan yang sangat cocok, cocok, potensial, atau perlu dieksplorasi.</span></div></li>
+              <li><span class="matrix-feature-icon"><i class="fas fa-check" aria-hidden="true"></i></span><div class="matrix-feature-copy"><strong>Alasan yang jelas</strong><span>Pahami kenapa jurusan direkomendasikan dan hal apa yang perlu kamu persiapkan.</span></div></li>
             </ul>
-          </div>
+          </article>
 
         </div>
       </div>
@@ -453,19 +455,7 @@
       <div class="container tracker-flex">
         
         <div class="tracker-top-row">
-          <div class="tracker-info-left">
-            <span class="tracker-brand-badge">GGC STUDY FIT™</span>
-            <span id="section-badge" class="section-indicator-badge">BAGIAN A DARI 7</span>
-          </div>
-
           <div class="tracker-tools-right">
-            <select id="demo-profile-select" class="demo-selector-select" title="Pilih profil untuk pengisian otomatis instan (Demo)">
-              <option value="">⚡ Demo Isi Cepat (Pilih Profil)</option>
-              <option value="tech_ai">Profil 1: Informatika & Data Science</option>
-              <option value="psychology">Profil 2: Psikologi & Humaniora</option>
-              <option value="medicine">Profil 3: Kedokteran & Biomedis</option>
-              <option value="creative_arts">Profil 4: Desain & Seni Kreatif</option>
-            </select>
             <button type="button" class="btn-outline btn-reset-btn" id="btn-reset-assessment" title="Reset jawaban">
               <i class="fas fa-redo"></i> <span>Reset</span>
             </button>
@@ -487,18 +477,13 @@
 
     <div class="container assessment-layout">
 
-      <!-- Step Navigation Tabs -->
-      <div class="step-tabs-container" id="assessment-step-tabs">
-        <!-- Rendered via JS -->
-      </div>
-
       <!-- Current Section Banner -->
       <div class="current-section-banner">
-        <span class="sec-badge-pill" id="section-code-pill">BAGIAN A</span>
-        <h2 class="sec-main-heading" id="section-title">TALENT — “WHAT AM I GOOD AT?”</h2>
-        <div class="sec-subtitle-text" id="section-subtitle">Bakat alami dan kapasitas kognitif Anda</div>
+        <span class="sec-badge-pill" id="section-code-pill">ASESMEN</span>
+        <h2 class="sec-main-heading" id="section-title">Pernyataan tentang diri Anda</h2>
+        <div class="sec-subtitle-text" id="section-subtitle">Jawab sesuai dengan pengalaman dan diri Anda</div>
         <p class="sec-desc-text" id="section-description">
-          Bagian ini mengukur kecenderungan bakat alamiah dan kekuatan berpikir Anda dalam menyelesaikan berbagai tantangan.
+          Pilih jawaban yang paling menggambarkan diri Anda. Soal disajikan dalam urutan campuran.
         </p>
         <div class="subdims-tags-row" id="section-subdims-tags">
           <!-- Rendered via JS -->
@@ -520,11 +505,11 @@
       <!-- Navigation Actions -->
       <div class="assessment-nav-actions">
         <button type="button" class="btn-nav btn-nav-back" id="btn-nav-prev" disabled>
-          <i class="fas fa-arrow-left"></i> <span>Bagian Sebelumnya</span>
+          <i class="fas fa-arrow-left"></i> <span>Sebelumnya</span>
         </button>
 
         <button type="button" class="btn-nav btn-nav-forward" id="btn-nav-next">
-          <span>Lanjut ke Bagian B</span> <i class="fas fa-arrow-right"></i>
+          <span>Lanjut</span> <i class="fas fa-arrow-right"></i>
         </button>
       </div>
 
@@ -569,6 +554,7 @@
               <div class="rep-title-group">
                 <h1>GGC STUDY FIT ASSESSMENT™</h1>
                 <p>OFFICIAL STUDENT & PARENT DIAGNOSTIC REPORT</p>
+                <p class="rep-personalized-title">Hasil asesmen untuk <strong id="rep-report-student-name">Nama Siswa</strong></p>
               </div>
             </div>
 

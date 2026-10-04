@@ -1,0 +1,15 @@
+{
+  "name": "ggc-assesment-system",
+  "version": "1.0.0",
+  "description": "> **Discover Your Potential. Find Your Direction.**   > Official Platform by **Go Great Career — Career Readiness Platform**",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev:vercel": "vercel dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

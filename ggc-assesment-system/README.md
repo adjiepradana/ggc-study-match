@@ -39,21 +39,24 @@ A modern, responsive, and scientifically grounded web application designed to he
    - **Crisp SVG Radar Chart**: 100% offline-ready vector radar chart visualizing strengths across Talent & Interest.
    - **Readiness Diagnostic Gauge**: Evaluates decision maturity and highlights the primary focus area for counseling.
    - **Print & PDF Support**: Dedicated `@media print` CSS formatted for official printouts and parent consultations.
-   - **Instant Demo Autofill**: Quick test presets for Tech/AI, Psychology, Medicine, and Creative Arts.
 
 ---
 
-## 🚀 How to Run
+## Form tester dan Google Sheets
 
-### Option 1: Direct File Opening
-Simply double-click `index.html` in any modern web browser (Chrome, Edge, Firefox, Safari).
+Halaman awal meminta **nama, email, nomor telepon, dan jenjang pendidikan**. Tidak ada kata sandi maupun autentikasi. Setelah mengisi form, tester masuk ke asesmen; progres asesmen tetap tersimpan di local storage browser.
 
-### Option 2: Local HTTP Server (Included)
-Run the lightweight built-in Node server:
-```bash
-node server.js
-```
-Open [http://localhost:3000](http://localhost:3000) in your web browser.
+### Sambungkan ke Google Sheets
+
+1. Buat Google Sheet, lalu pilih **Extensions → Apps Script**.
+2. Salin ID spreadsheet dari URL (`https://docs.google.com/spreadsheets/d/ID_SPREADSHEET/edit`). Ganti `PASTE_SPREADSHEET_ID_HERE` di bagian atas file [`google-apps-script/Code.gs`](google-apps-script/Code.gs) dengan ID tersebut. Tempel seluruh isi file itu ke editor Apps Script, lalu simpan.
+3. Di Apps Script pilih **Deploy → New deployment → Web app**. Pilih **Execute as: Me** dan **Who has access: Anyone**, lalu deploy dan izinkan akses yang diminta Google. Salin URL Web app yang berakhiran `/exec`.
+4. Buka [`js/sheets-config.js`](js/sheets-config.js), tempel URL tersebut sebagai nilai `GGC_SHEETS_WEBHOOK_URL`, lalu simpan.
+5. Deploy/import folder ini di Vercel. Atur **Root Directory** ke `ggc-assesment-system` bila mengimpor repository dari folder `D:\GGC`.
+
+Data akan masuk ke tab `Tester` dengan kolom waktu daftar, nama, email, nomor telepon, dan jenjang pendidikan. Form tanpa password cocok untuk pengujian sederhana, tetapi siapa pun yang memiliki URL dapat mengirim data ke Sheet. Jangan gunakan untuk data sensitif atau sebagai sistem akun produksi. URL Web app disediakan oleh Google Apps Script dan dipasang langsung pada konfigurasi browser.
+
+Untuk uji lokal, jalankan `node server.js`, isi URL Apps Script di `js/sheets-config.js`, lalu buka `http://localhost:3000`.
 
 ---
 
@@ -62,6 +65,7 @@ Open [http://localhost:3000](http://localhost:3000) in your web browser.
 ```
 d:\GGC\
 ├── index.html            # Main HTML structure (Landing, Assessment, & Report views)
+├── login.html            # Login and account registration
 ├── server.js             # Lightweight zero-dependency static HTTP server
 ├── README.md             # Documentation and overview
 ├── assets\

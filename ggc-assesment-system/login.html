@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Form tester Go Great Career untuk mencoba asesmen Study Fit.">
+  <title>Form Tester — GGC Study Fit</title>
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="auth-visual" aria-label="Go Great Career">
+      <a class="brand" href="/login.html">
+        <img src="assets/logo.jpg" alt="Logo Go Great Career">
+        <span><strong>GO GREAT CAREER</strong><small>CAREER READINESS PLATFORM</small></span>
+      </a>
+      <div class="visual-copy">
+        <span class="eyebrow"><i></i> GGC STUDY FIT ASSESSMENT™</span>
+        <h1>Kenali potensimu.<br><em>Tentukan arahmu.</em></h1>
+        <p>Masuk untuk memulai asesmen minat dan bakat, lalu temukan rekomendasi jurusan yang sesuai dengan profilmu.</p>
+      </div>
+      <div class="visual-footer"><span>84 indikator diri</span><span>18 rumpun studi</span><span>Laporan personal</span></div>
+    </section>
+
+    <section class="auth-panel">
+      <div class="auth-card">
+        <a class="mobile-brand" href="/login.html"><img src="assets/logo.jpg" alt="Go Great Career"></a>
+        <div class="auth-heading">
+          <span class="eyebrow">FORM TESTER</span>
+          <h2>Mulai asesmen</h2>
+          <p>Isi data singkat berikut untuk mencoba asesmen Study Fit.</p>
+        </div>
+
+        <form id="auth-form" novalidate>
+          <div class="field-group">
+            <label for="auth-name">Nama lengkap</label>
+            <input id="auth-name" name="name" type="text" autocomplete="name" maxlength="100" required placeholder="Nama lengkapmu">
+          </div>
+          <div class="field-group">
+            <label for="auth-email">Email</label>
+            <input id="auth-email" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="nama@email.com">
+          </div>
+          <div class="field-group">
+            <label for="auth-phone">Nomor telepon</label>
+            <input id="auth-phone" name="phone" type="tel" autocomplete="tel" maxlength="30" required placeholder="08xxxxxxxxxx">
+          </div>
+          <div class="field-group">
+            <label for="auth-education">Jenjang pendidikan</label>
+            <select id="auth-education" name="education" required>
+              <option value="" selected disabled>Pilih jenjang pendidikan</option>
+              <option>SMP/sederajat</option>
+              <option>SMA/SMK/sederajat</option>
+              <option>Gap year</option>
+              <option>Mahasiswa</option>
+              <option>Lainnya</option>
+            </select>
+          </div>
+
+          <p class="auth-message" id="auth-message" role="alert" aria-live="polite"></p>
+          <button type="submit" class="submit-button" id="auth-submit"><span>Lanjut ke asesmen</span><i aria-hidden="true">→</i></button>
+        </form>
+        <p class="auth-privacy"><span aria-hidden="true">ℹ️</span> Form tester ini tidak memakai kata sandi. Data yang Anda isi dicatat untuk keperluan uji coba.</p>
+      </div>
+      <footer class="auth-copyright">© 2026 Go Great Career</footer>
+    </section>
+  </main>
+  <script src="js/sheets-config.js"></script>
+  <script src="js/login.js" defer></script>
+</body>
+</html>
