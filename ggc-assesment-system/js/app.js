@@ -128,7 +128,7 @@ function bindGlobalEvents() {
     logoutButton.addEventListener("click", async () => {
       logoutButton.disabled = true;
       localStorage.removeItem("ggc_tester_profile_v1");
-      window.location.replace("/login.html");
+      window.location.replace("login.html");
     });
   });
 
@@ -244,7 +244,7 @@ function loadTesterProfile() {
   try { user = JSON.parse(localStorage.getItem("ggc_tester_profile_v1") || "null"); }
   catch { user = null; }
   if (!user?.email) {
-    window.location.replace("/login.html");
+    window.location.replace("login.html");
     return null;
   }
   const accountLabel = document.getElementById("auth-user-label");

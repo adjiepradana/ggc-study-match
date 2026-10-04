@@ -54,6 +54,10 @@ Halaman awal meminta **nama, email, nomor telepon, dan jenjang pendidikan**. Tid
 4. Buka [`js/sheets-config.js`](js/sheets-config.js), tempel URL tersebut sebagai nilai `GGC_SHEETS_WEBHOOK_URL`, lalu simpan.
 5. Deploy/import folder ini di Vercel. Atur **Root Directory** ke `ggc-assesment-system` bila mengimpor repository dari folder `D:\GGC`.
 
+### Deploy melalui GitHub Pages
+
+Repository ini menyimpan situs di folder `ggc-assesment-system`, jadi workflow [`../.github/workflows/pages.yml`](../.github/workflows/pages.yml) menerbitkan isi folder tersebut. Di GitHub buka **Settings → Pages**, pilih **GitHub Actions** sebagai Build and deployment source, lalu push perubahan ke branch `main`. Setelah workflow selesai, buka URL Pages yang ditampilkan di **Settings → Pages** atau di hasil workflow.
+
 Data akan masuk ke tab `Tester` dengan kolom waktu daftar, nama, email, nomor telepon, dan jenjang pendidikan. Form tanpa password cocok untuk pengujian sederhana, tetapi siapa pun yang memiliki URL dapat mengirim data ke Sheet. Jangan gunakan untuk data sensitif atau sebagai sistem akun produksi. URL Web app disediakan oleh Google Apps Script dan dipasang langsung pada konfigurasi browser.
 
 Untuk uji lokal, jalankan `node server.js`, isi URL Apps Script di `js/sheets-config.js`, lalu buka `http://localhost:3000`.

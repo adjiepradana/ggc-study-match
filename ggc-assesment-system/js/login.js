@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   try {
     const saved = JSON.parse(localStorage.getItem(TESTER_PROFILE_KEY) || "null");
     if (saved?.email) {
-      window.location.replace("/index.html");
+      window.location.replace("index.html");
       return;
     }
   } catch { /* Ignore invalid tester data and ask for the form again. */ }
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         await fetch(sheetUrl, { method: "POST", mode: "no-cors", body: JSON.stringify(profile) });
       }
       localStorage.setItem(TESTER_PROFILE_KEY, JSON.stringify(profile));
-      window.location.replace("/index.html");
+      window.location.replace("index.html");
     } catch {
       message.textContent = "Data belum terkirim. Coba lagi atau hubungi pengelola tester.";
       submit.disabled = false;
