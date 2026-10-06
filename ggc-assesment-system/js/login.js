@@ -1,6 +1,25 @@
 const TESTER_PROFILE_KEY = "ggc_tester_profile_v1";
 
 document.addEventListener("DOMContentLoaded", () => {
+  const themeToggle = document.getElementById("auth-theme-toggle");
+  const setLoginTheme = isDark => {
+    document.documentElement.dataset.theme = isDark ? "dark" : "light";
+    document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+    if (themeToggle) {
+      themeToggle.setAttribute("aria-pressed", String(isDark));
+      themeToggle.setAttribute("aria-label", isDark ? "Aktifkan mode terang" : "Aktifkan mode gelap");
+      themeToggle.innerHTML = `<i class="fas fa-${isDark ? "sun" : "moon"}" aria-hidden="true"></i><span class="sr-only">${isDark ? "Terang" : "Gelap"}</span>`;
+    }
+  };
+  let darkTheme = false;
+  try { darkTheme = localStorage.getItem("ggc_display_theme_v1") === "dark"; } catch { darkTheme = document.documentElement.dataset.theme === "dark"; }
+  setLoginTheme(darkTheme);
+  if (themeToggle) themeToggle.addEventListener("click", () => {
+    darkTheme = document.documentElement.dataset.theme !== "dark";
+    setLoginTheme(darkTheme);
+    try { localStorage.setItem("ggc_display_theme_v1", darkTheme ? "dark" : "light"); } catch { /* Theme remains active until this page closes. */ }
+  });
+
   const form = document.getElementById("auth-form");
   const message = document.getElementById("auth-message");
   const submit = document.getElementById("auth-submit");

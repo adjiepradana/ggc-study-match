@@ -19,6 +19,7 @@
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
+  <script>try { if (localStorage.getItem("ggc_display_theme_v1") === "dark") document.documentElement.dataset.theme = "dark"; } catch {}</script>
 </head>
 <body>
 
@@ -36,7 +37,8 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="#about" onclick="showView('landing-view')" class="nav-link">Tentang Asesmen</a></li>
+        <li><a href="javascript:void(0)" onclick="showView('dashboard-view')" class="nav-link">Dashboard</a></li>
+        <li><a href="javascript:void(0)" onclick="showView('landing-view')" class="nav-link">Tentang GGC</a></li>
         <li><a href="#dimensions" onclick="showView('landing-view')" class="nav-link">7 Dimensi Profil</a></li>
         <li><a href="#matrix-system" onclick="showView('landing-view')" class="nav-link">Dual-Matrix™</a></li>
         <li><a href="#why-parents" onclick="showView('landing-view')" class="nav-link">Nilai untuk Orang Tua</a></li>
@@ -78,7 +80,8 @@
       <button type="button" class="drawer-close-btn" id="btn-drawer-close" aria-label="Tutup Menu">&times;</button>
     </div>
     <ul class="drawer-links">
-      <li><a href="#about" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-home"></i> <span>Tentang Asesmen</span></a></li>
+      <li><a href="javascript:void(0)" class="drawer-link" onclick="closeMobileDrawer(); showView('dashboard-view');"><i class="fas fa-gauge-high"></i> <span>Dashboard Saya</span></a></li>
+      <li><a href="#about" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-home"></i> <span>Tentang GGC</span></a></li>
       <li><a href="#dimensions" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-th-list"></i> <span>7 Dimensi Profil</span></a></li>
       <li><a href="#matrix-system" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-network-wired"></i> <span>Dual-Matrix™</span></a></li>
       <li><a href="#why-parents" class="drawer-link" onclick="closeMobileDrawer(); showView('landing-view');"><i class="fas fa-user-friends"></i> <span>Nilai untuk Orang Tua</span></a></li>
@@ -97,6 +100,59 @@
     </div>
   </div>
   <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeMobileDrawer()"></div>
+  <button type="button" class="theme-toggle theme-toggle-floating" id="btn-theme-toggle" aria-label="Aktifkan mode gelap" aria-pressed="false"><i class="fas fa-moon" aria-hidden="true"></i><span class="theme-toggle-label sr-only">Gelap</span></button>
+
+  <!-- Personal progress dashboard -->
+  <main id="dashboard-view" class="app-view">
+    <section class="dashboard-shell">
+      <div class="container dashboard-container">
+        <div class="dashboard-welcome">
+          <div>
+            <span class="dashboard-eyebrow"><i class="fas fa-sparkles"></i> RUANG PERJALANANMU DI GGC</span>
+            <h1>Hai, <span id="dashboard-user-name">Teman</span> 👋</h1>
+            <p>Setiap jawaban membantumu mengenali potensi dan merancang langkah studi berikutnya.</p>
+          </div>
+          <div class="dashboard-date-chip"><i class="far fa-calendar"></i><span id="dashboard-today"></span></div>
+        </div>
+
+        <div class="dashboard-progress-card">
+          <div class="dashboard-progress-copy">
+            <span class="dashboard-card-kicker" id="dashboard-status-kicker">LANGKAH PERTAMAMU</span>
+            <h2 id="dashboard-progress-title">Kenali potensi, temukan arah.</h2>
+            <p id="dashboard-progress-description">Mulai asesmen 84 pernyataan untuk mendapatkan pemetaan profil dan rekomendasi rumpun studi yang personal.</p>
+            <div class="dashboard-progress-actions">
+              <button type="button" class="btn-primary" id="dashboard-primary-action" onclick="showView('assessment-view')"><i class="fas fa-play"></i> <span>Mulai asesmen</span></button>
+              <button type="button" class="btn-outline" onclick="showView('landing-view')"><i class="fas fa-compass"></i> <span>Kenali GGC</span></button>
+            </div>
+          </div>
+          <div class="dashboard-progress-visual" aria-label="Progres asesmen">
+            <div class="dashboard-orbit-art" aria-hidden="true"><i class="fas fa-compass"></i><span class="orbit-dot dot-one"></span><span class="orbit-dot dot-two"></span><span class="orbit-dot dot-three"></span></div>
+            <div class="dashboard-ring" id="dashboard-progress-ring" style="--progress: 0%"><div><strong id="dashboard-progress-percent">0%</strong><span>SELESAI</span></div></div>
+            <div class="dashboard-progress-count"><strong id="dashboard-answered-count">0</strong><span>dari 84 pernyataan</span></div>
+          </div>
+          <div class="dashboard-progress-track"><div id="dashboard-progress-bar"></div></div>
+        </div>
+
+        <div class="dashboard-stats-grid">
+          <article class="dashboard-stat-card"><span class="dashboard-stat-icon mint"><i class="fas fa-layer-group"></i></span><div><strong>7 dimensi</strong><span>Bakat hingga kesiapan</span></div><span class="stat-spark spark-mint" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></article>
+          <article class="dashboard-stat-card"><span class="dashboard-stat-icon gold"><i class="fas fa-graduation-cap"></i></span><div><strong>18 rumpun studi</strong><span>Dieksplorasi melalui profilmu</span></div><span class="stat-spark spark-gold" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></article>
+          <article class="dashboard-stat-card"><span class="dashboard-stat-icon blue"><i class="fas fa-shield-heart"></i></span><div><strong>Tersimpan otomatis</strong><span>Progres ada di perangkat ini</span></div><span class="stat-spark spark-blue" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></article>
+        </div>
+
+        <section class="dashboard-result-card" id="dashboard-result-card" hidden>
+          <div class="dashboard-section-heading"><div><span class="dashboard-card-kicker">HASIL TERBARU</span><h2>Temukan pola kekuatanmu</h2></div><button class="dashboard-text-link" type="button" onclick="showView('report-view')">Buka laporan lengkap <i class="fas fa-arrow-right"></i></button></div>
+          <div class="dashboard-result-grid">
+            <div class="dashboard-signature"><span><i class="fas fa-award"></i> POTENTIAL SIGNATURE</span><strong id="dashboard-signature-code"></strong><small id="dashboard-signature-title"></small><i class="fas fa-fingerprint result-watermark" aria-hidden="true"></i></div>
+            <div class="dashboard-result-metric"><span>Kesiapan memilih</span><strong id="dashboard-readiness-score"></strong><small id="dashboard-readiness-level"></small><span class="metric-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
+            <div class="dashboard-top-match"><span>REKOMENDASI TERATAS</span><strong id="dashboard-top-major"></strong><small id="dashboard-top-fit"></small><i class="fas fa-graduation-cap result-watermark" aria-hidden="true"></i></div>
+          </div>
+        </section>
+
+        <section class="dashboard-next-card"><div class="dashboard-next-icon"><i class="fas fa-route"></i><span></span></div><div><span class="dashboard-card-kicker">LANGKAH BERIKUTNYA</span><h2 id="dashboard-next-title">Mulai dari satu langkah kecil.</h2><p id="dashboard-next-description">Jawab dengan jujur dan santai. Tidak ada jawaban benar atau salah—yang penting sesuai dirimu.</p></div><button type="button" class="dashboard-next-arrow" aria-label="Lanjutkan perjalanan" onclick="showView('assessment-view')"><i class="fas fa-arrow-right"></i></button></section>
+        <p class="dashboard-note"><i class="fas fa-lock"></i> Progres jawaban tersimpan secara lokal di browser dan perangkat yang kamu gunakan.</p>
+      </div>
+    </section>
+  </main>
 
   <!-- =========================================================================
        VIEW 1: LANDING PAGE VIEW
@@ -163,7 +219,7 @@
                 <span class="preview-example-badge"><i class="fas fa-sparkles" aria-hidden="true"></i> CONTOH HASIL ASESMEN</span>
               </div>
 
-              <div class="hero-keyvisual" role="img" aria-label="Tujuh dimensi profil diri dipetakan menjadi rekomendasi Study Match">
+              <div class="hero-keyvisual" role="img" aria-label="Alur GGC: pemetaan 7 dimensi, pencocokan Dual-Matrix, dan rekomendasi rumpun studi">
                 <div class="keyvisual-orbit" aria-hidden="true">
                   <span class="orbit-node orbit-node-1"></span>
                   <span class="orbit-node orbit-node-2"></span>
@@ -179,11 +235,19 @@
                   </div>
                 </div>
                 <div class="keyvisual-connector" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>
+                <div class="keyvisual-matrix" aria-hidden="true">
+                  <span class="matrix-kicker">ANALISIS PROFIL</span>
+                  <div class="matrix-symbols"><span><i class="fas fa-user"></i></span><b>×</b><span><i class="fas fa-book-open"></i></span></div>
+                  <strong>Dual-Matrix</strong>
+                  <small>Person × Study</small>
+                  <span class="matrix-signal"><i></i><i></i><i></i><i></i><i></i></span>
+                </div>
+                <div class="keyvisual-connector" aria-hidden="true"><i class="fas fa-arrow-right"></i></div>
                 <div class="keyvisual-destination">
                   <span class="destination-kicker">ARAH STUDI</span>
                   <i class="fas fa-compass destination-icon" aria-hidden="true"></i>
-                  <strong>Study Match</strong>
-                  <small>Rekomendasi lebih terarah</small>
+                  <strong>18 Rumpun</strong>
+                  <small>Rekomendasi personal</small>
                 </div>
                 <div class="keyvisual-dimensions" aria-hidden="true">
                   <span>Bakat</span><span>Minat</span><span>Gaya kerja</span><span>Nilai</span>
@@ -569,6 +633,7 @@
 
       <!-- Current Section Banner -->
       <div class="current-section-banner">
+        <div class="section-banner-art" aria-hidden="true"><i class="fas fa-compass"></i><span></span><span></span></div>
         <span class="sec-badge-pill" id="section-code-pill">ASESMEN</span>
         <h2 class="sec-main-heading" id="section-title">Pernyataan tentang diri Anda</h2>
         <div class="sec-subtitle-text" id="section-subtitle">Jawab sesuai dengan pengalaman dan diri Anda</div>
@@ -578,13 +643,16 @@
         <div class="subdims-tags-row" id="section-subdims-tags">
           <!-- Rendered via JS -->
         </div>
+        <div class="assessment-stepper" id="assessment-stepper" aria-label="Tahapan asesmen"></div>
       </div>
 
       <!-- Scale Guidance Callout -->
-      <div style="background: #FAF7EE; border-left: 4px solid var(--gold); padding: 12px 18px; border-radius: 6px; margin-bottom: 24px; font-size: 0.88rem; color: #785A1D;">
-        <strong>Petunjuk Skala Pilihan:</strong> 
+      <div class="assessment-scale-guide">
+        <span class="scale-guide-icon"><i class="fas fa-lightbulb"></i></span>
+        <div><strong>Petunjuk pilihan</strong><p>
         1 = Sangat Tidak Sesuai | 2 = Tidak Sesuai | 3 = Cukup Tidak Sesuai | 4 = Cukup Sesuai | 5 = Sangat Sesuai. 
-        <em>(Pilih jawaban yang paling jujur dan autentik menggambarkan diri Anda).</em>
+        <em>Pilih jawaban yang paling jujur dan menggambarkan dirimu.</em>
+        </p></div>
       </div>
 
       <!-- Questions List Container -->
@@ -594,6 +662,7 @@
 
       <!-- Navigation Actions -->
       <div class="assessment-nav-actions">
+        <span class="assessment-save-note"><i class="fas fa-cloud-arrow-down"></i> Progres tersimpan otomatis</span>
         <button type="button" class="btn-nav btn-nav-back" id="btn-nav-prev" disabled>
           <i class="fas fa-arrow-left"></i> <span>Sebelumnya</span>
         </button>
@@ -606,6 +675,24 @@
     </div>
 
   </main>
+
+  <div class="assessment-encouragement-overlay" id="assessment-encouragement" aria-hidden="true">
+    <section class="assessment-encouragement-dialog" role="dialog" aria-modal="true" aria-labelledby="assessment-encouragement-title" aria-describedby="assessment-encouragement-message">
+      <div class="encouragement-orbit encouragement-orbit-one" aria-hidden="true"></div>
+      <div class="encouragement-orbit encouragement-orbit-two" aria-hidden="true"></div>
+      <div class="encouragement-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="encouragement-art" aria-hidden="true"><span class="encouragement-art-glow"></span><i class="fas fa-bolt encouragement-bolt"></i><i class="fas fa-star encouragement-star star-a"></i><i class="fas fa-star encouragement-star star-b"></i><i class="fas fa-sparkles encouragement-star star-c"></i></div>
+      <span class="encouragement-kicker" id="assessment-encouragement-kicker">SESI SELESAI</span>
+      <h2 id="assessment-encouragement-title">Kamu hebat!</h2>
+      <p id="assessment-encouragement-message" aria-live="polite">Setiap jawaban membantumu mengenal diri lebih baik.</p>
+      <div class="encouragement-progress-chip" id="assessment-encouragement-progress"><i class="fas fa-check-circle"></i> 12 pernyataan terselesaikan</div>
+      <div class="encouragement-actions">
+        <button type="button" class="btn-primary encouragement-continue" id="btn-encouragement-continue"><span>Lanjutkan perjalanan</span><i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="encouragement-review" id="btn-encouragement-review">Tinjau jawaban sesi ini</button>
+      </div>
+      <span class="encouragement-footer"><i class="fas fa-heart"></i> Satu langkah lagi menuju arah yang lebih jelas</span>
+    </section>
+  </div>
 
   <!-- =========================================================================
        VIEW 3: COMPREHENSIVE DIAGNOSTIC REPORT VIEW
@@ -675,6 +762,23 @@
               <div class="val" style="color: #059669;"><i class="fas fa-check-circle"></i> Selesai Lengkap</div>
             </div>
           </div>
+
+          <section class="report-at-glance" aria-labelledby="report-at-glance-title">
+            <div class="at-glance-heading">
+              <div><span class="at-glance-kicker"><i class="fas fa-sparkles"></i> HASIL PERSONALMU</span><h2 id="report-at-glance-title">Gambaran besar arah studimu</h2><p>Ringkasan kecocokan dan kesiapanmu dalam sekali lihat.</p></div>
+              <span class="at-glance-method"><i class="fas fa-bullseye"></i> Dual-Matrix™</span>
+            </div>
+            <div class="at-glance-grid">
+              <article class="glance-lead-match">
+                <span class="glance-card-label"><i class="fas fa-trophy"></i> KECOCOKAN TERATAS</span>
+                <div class="glance-lead-content"><div class="glance-score-ring" id="rep-glance-score-ring" role="img" aria-label="Skor kecocokan teratas"><div><strong id="rep-glance-best-score">--%</strong><small>MATCH</small></div></div><div><h3 id="rep-glance-best-major">Memetakan rekomendasi...</h3><span id="rep-glance-best-category" class="glance-category"></span></div></div>
+                <a href="#rep-top-five-container" class="glance-detail-link">Lihat analisis kecocokan <i class="fas fa-arrow-right"></i></a>
+              </article>
+              <article class="glance-ranking-card"><div class="glance-subheading"><i class="fas fa-ranking-star"></i><span>RUMPUN YANG SELARAS</span></div><div id="rep-glance-top-matches" class="glance-match-list"></div></article>
+              <article class="glance-readiness-card"><div class="glance-subheading"><i class="fas fa-compass"></i><span>KESIAPAN MEMILIH</span></div><div class="glance-readiness-score"><strong id="rep-glance-readiness-score">--%</strong><span id="rep-glance-readiness-level">Menghitung kesiapan</span></div><div class="glance-readiness-track"><span id="rep-glance-readiness-bar"></span></div><p>Fokus pengembangan: <strong id="rep-glance-priority">—</strong></p></article>
+            </div>
+            <div class="glance-next-step"><span class="glance-next-icon"><i class="fas fa-route"></i></span><div><span>LANGKAH PERSONAL BERIKUTNYA</span><strong id="rep-glance-next-title">Menyusun langkah eksplorasi</strong><p id="rep-glance-next-copy"></p></div></div>
+          </section>
 
           <!-- 3. Potential Signature Showcase -->
           <div class="rep-signature-showcase">

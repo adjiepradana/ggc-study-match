@@ -17,7 +17,9 @@ const AppState = {
   answers: {},
   reportData: null,
   accountUser: null,
-  activeFilter: "all"
+  activeFilter: "all",
+  encouragementReturnFocus: null,
+  pendingAssessmentContinue: null
 };
 
 // Initialize application on DOM ready
@@ -38,18 +40,34 @@ async function initApp() {
   STORAGE_KEY = `ggc_assessment_v1_${encodeURIComponent(accountUser.email)}`;
   loadSavedState();
   ensureQuestionOrder();
+  initializeTheme();
   bindGlobalEvents();
   setupLandingMotion();
   renderSection();
   updateProgressUI();
 
+  // Rebuild reports saved by earlier versions that stored answers only.
+  if (Object.keys(AppState.answers).length === 84 && !AppState.reportData) {
+    const personProfile = AssessmentEngine.calculatePersonProfile(AppState.answers);
+    AppState.reportData = {
+      personProfile,
+      studyFitResults: AssessmentEngine.calculateStudyFit(personProfile),
+      student: AppState.student,
+      generatedAt: new Date().toISOString()
+    };
+    saveState();
+  }
+
   // If there's an existing completed report, allow viewing it directly
   if (AppState.reportData && Object.keys(AppState.answers).length === 84) {
+    renderReportView(AppState.reportData);
     const resumeBtn = document.getElementById("btn-resume-report");
     if (resumeBtn) resumeBtn.style.display = "inline-flex";
     const resumeBtnMobile = document.getElementById("btn-resume-report-mobile");
     if (resumeBtnMobile) resumeBtnMobile.style.display = "inline-flex";
   }
+  renderDashboard();
+  showView("dashboard-view");
 }
 
 function setupLandingMotion() {
@@ -126,6 +144,7 @@ function loadSavedState() {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed.answers) AppState.answers = parsed.answers;
+      if (parsed.reportData) AppState.reportData = parsed.reportData;
       if (parsed.student) AppState.student = { ...AppState.student, ...parsed.student };
       if (parsed.currentSectionIndex !== undefined) AppState.currentSectionIndex = parsed.currentSectionIndex;
       if (Array.isArray(parsed.questionOrder)) AppState.questionOrder = parsed.questionOrder;
@@ -172,7 +191,8 @@ function saveState() {
       student: AppState.student,
       answers: AppState.answers,
       currentSectionIndex: AppState.currentSectionIndex,
-      questionOrder: AppState.questionOrder
+      questionOrder: AppState.questionOrder,
+      reportData: AppState.reportData
     }));
   } catch (e) {
     console.warn("Storage save error:", e);
@@ -183,6 +203,10 @@ function saveState() {
  * Bind DOM events
  */
 function bindGlobalEvents() {
+  document.querySelectorAll(".theme-toggle").forEach(button => {
+    button.addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
+  });
+
   document.querySelectorAll(".faq-item").forEach(item => {
     item.addEventListener("toggle", () => {
       if (!item.open) return;
@@ -250,6 +274,15 @@ function bindGlobalEvents() {
       handleNextSection();
     });
   }
+
+  const encouragementContinue = document.getElementById("btn-encouragement-continue");
+  if (encouragementContinue) encouragementContinue.addEventListener("click", continueAfterEncouragement);
+  const encouragementReview = document.getElementById("btn-encouragement-review");
+  if (encouragementReview) encouragementReview.addEventListener("click", closeAssessmentEncouragement);
+  window.addEventListener("keydown", event => {
+    const encouragement = document.getElementById("assessment-encouragement");
+    if (event.key === "Escape" && encouragement?.classList.contains("open")) closeAssessmentEncouragement();
+  });
 
   // Reset Button
   const btnReset = document.getElementById("btn-reset-assessment");
@@ -461,11 +494,12 @@ function renderSection() {
 
     itemCard.innerHTML = `
       <div class="item-card-header">
+        <span class="item-prompt-label"><i class="fas fa-sparkles"></i> PERTANYAAN</span>
         <span class="item-number-seq">Pernyataan ${AppState.currentSectionIndex * QUESTIONS_PER_PAGE + idx + 1} dari ${AppState.questionOrder.length}</span>
+        <span class="item-complete-check" aria-label="Sudah dijawab"><i class="fas fa-check"></i></span>
       </div>
       <p class="item-statement">${escapeHtml(item.text)}</p>
-      
-      <div class="item-likert-scale" role="radiogroup" aria-label="${item.id}">
+      <div class="item-likert-scale" role="radiogroup" aria-label="Jawaban untuk pernyataan ${AppState.currentSectionIndex * QUESTIONS_PER_PAGE + idx + 1}">
         ${ASSESSMENT_DATA.scaleOptions.map(opt => `
           <button type="button" 
                   class="likert-btn ${currentVal === opt.value ? "selected" : ""}"
@@ -573,13 +607,101 @@ function handleNextSection() {
       showNotification(`Harap lengkapi semua 84 pernyataan (saat ini ${totalAnswered}/84).`, "warning");
       return;
     }
-    processAndShowReport();
+    showAssessmentEncouragement(true, pages);
   } else {
-    AppState.currentSectionIndex++;
-    saveState();
-    renderSection();
-    scrollToFirstQuestion();
+    showAssessmentEncouragement(false, pages);
   }
+}
+
+function initializeTheme() {
+  let preference = "light";
+  try { preference = localStorage.getItem("ggc_display_theme_v1") === "dark" ? "dark" : "light"; }
+  catch { preference = document.documentElement.dataset.theme === "dark" ? "dark" : "light"; }
+  setTheme(preference, false);
+}
+
+function setTheme(theme, persist = true) {
+  const isDark = theme === "dark";
+  document.documentElement.dataset.theme = isDark ? "dark" : "light";
+  document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+  if (persist) {
+    try { localStorage.setItem("ggc_display_theme_v1", isDark ? "dark" : "light"); }
+    catch (error) { console.warn("Preferensi tema belum tersimpan:", error); }
+  }
+  document.querySelectorAll(".theme-toggle").forEach(button => {
+    const icon = button.querySelector("i");
+    const label = button.querySelector(".theme-toggle-label");
+    const action = isDark ? "Aktifkan mode terang" : "Aktifkan mode gelap";
+    button.setAttribute("aria-label", action);
+    button.setAttribute("aria-pressed", String(isDark));
+    if (icon) icon.className = isDark ? "fas fa-sun" : "fas fa-moon";
+    if (label) label.textContent = button.classList.contains("theme-toggle-drawer") ? (isDark ? "Aktifkan mode terang" : "Aktifkan mode gelap") : (isDark ? "Terang" : "Gelap");
+  });
+  if (AppState.reportData) renderRadarAndDimensionBars(AppState.reportData.personProfile);
+}
+
+function showAssessmentEncouragement(isFinal, pages) {
+  const overlay = document.getElementById("assessment-encouragement");
+  if (!overlay) {
+    advanceAssessment(isFinal);
+    return;
+  }
+
+  const currentSession = AppState.currentSectionIndex + 1;
+  const totalAnswered = Object.values(AppState.answers).filter(value => Number(value) >= 1 && Number(value) <= 5).length;
+  const remaining = Math.max(0, 84 - totalAnswered);
+  const messages = [
+    "Jawaban jujurmu sedang membentuk gambaran diri yang makin jelas. Kamu sudah melakukan bagian penting: berani mulai.",
+    "Keren, kamu konsisten meluangkan waktu untuk mengenali potensimu. Teruskan dengan ritme yang nyaman.",
+    "Satu sesi lagi selesai! Setiap jawaban membantumu menemukan arah yang terasa lebih cocok untuk dirimu."
+  ];
+
+  document.getElementById("assessment-encouragement-kicker").textContent = isFinal ? "MISI ASESMEN TUNTAS" : `SESI ${currentSession} SELESAI`;
+  document.getElementById("assessment-encouragement-title").textContent = isFinal ? "Kamu berhasil menuntaskan semuanya!" : "Kamu hebat, teruskan!";
+  document.getElementById("assessment-encouragement-message").textContent = isFinal
+    ? "Kamu sudah menyelesaikan 84 pernyataan. Sekarang waktunya melihat peta potensi dan rekomendasi studi yang sudah kamu bangun."
+    : messages[(currentSession - 1) % messages.length];
+  document.getElementById("assessment-encouragement-progress").innerHTML = isFinal
+    ? '<i class="fas fa-check-circle"></i> 84 pernyataan selesai • Kamu sampai di garis akhir'
+    : `<i class="fas fa-check-circle"></i> ${totalAnswered} dari 84 terjawab <span>• ${remaining} lagi menuju hasilmu</span>`;
+  document.getElementById("btn-encouragement-continue").innerHTML = isFinal
+    ? '<span>Lihat hasil asesmen</span><i class="fas fa-chart-pie"></i>'
+    : `<span>Lanjut ke sesi ${currentSession + 1} dari ${pages.length}</span><i class="fas fa-arrow-right"></i>`;
+
+  AppState.encouragementReturnFocus = document.activeElement;
+  AppState.pendingAssessmentContinue = () => advanceAssessment(isFinal);
+  overlay.classList.add("open");
+  overlay.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  document.getElementById("btn-encouragement-continue").focus();
+}
+
+function closeAssessmentEncouragement() {
+  const overlay = document.getElementById("assessment-encouragement");
+  if (!overlay) return;
+  overlay.classList.remove("open");
+  overlay.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+  AppState.pendingAssessmentContinue = null;
+  if (AppState.encouragementReturnFocus?.isConnected) AppState.encouragementReturnFocus.focus();
+}
+
+function continueAfterEncouragement() {
+  const action = AppState.pendingAssessmentContinue;
+  closeAssessmentEncouragement();
+  if (typeof action === "function") action();
+}
+
+function advanceAssessment(isFinal) {
+  if (isFinal) {
+    processAndShowReport();
+    return;
+  }
+  AppState.currentSectionIndex++;
+  saveState();
+  renderSection();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  scrollToFirstQuestion();
 }
 
 function scrollToFirstQuestion() {
@@ -605,6 +727,88 @@ function updateProgressUI() {
   if (bar) bar.style.width = `${percent}%`;
   if (textPercent) textPercent.textContent = `${percent}%`;
   if (countText) countText.textContent = `${answeredCount} dari ${totalItems} Terjawab`;
+  renderStepTabs();
+  renderDashboard();
+}
+
+function renderStepTabs() {
+  const container = document.getElementById("assessment-stepper");
+  if (!container) return;
+  const pages = getAssessmentPages();
+  const page = pages[AppState.currentSectionIndex] || [];
+  const sessionAnswered = page.filter(item => Number(AppState.answers[item.id]) >= 1 && Number(AppState.answers[item.id]) <= 5).length;
+  container.innerHTML = `
+    <div class="stepper-heading"><span><i class="fas fa-route"></i> PERJALANAN ASESMEN</span><strong>Sesi ${AppState.currentSectionIndex + 1} <small>dari ${pages.length}</small></strong></div>
+    <div class="stepper-track" role="list" aria-label="${pages.length} sesi, sesi ${AppState.currentSectionIndex + 1} aktif">
+      ${pages.map((items, index) => {
+        const count = items.filter(item => Number(AppState.answers[item.id]) >= 1 && Number(AppState.answers[item.id]) <= 5).length;
+        const complete = count === items.length;
+        const current = index === AppState.currentSectionIndex;
+        const state = complete ? "complete" : current ? "current" : "upcoming";
+        return `<span class="stepper-step ${state}" role="listitem" ${current ? 'aria-current="step"' : ""} title="Sesi ${index + 1}: ${count} dari ${items.length} dijawab"><i>${complete ? '<span class="fas fa-check"></span>' : index + 1}</i></span>`;
+      }).join('<span class="stepper-connector" aria-hidden="true"></span>')}
+    </div>
+    <div class="stepper-caption"><span>Jawaban di sesi ini</span><strong>${sessionAnswered} <small>/ ${page.length}</small></strong></div>
+  `;
+}
+
+function renderDashboard() {
+  const name = document.getElementById("dashboard-user-name");
+  if (!name) return;
+  const today = document.getElementById("dashboard-today");
+  if (today) today.textContent = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric" }).format(new Date());
+  name.textContent = (AppState.accountUser?.name || AppState.student.name || "Teman").split(" ")[0];
+
+  const answered = Object.values(AppState.answers).filter(value => Number(value) >= 1 && Number(value) <= 5).length;
+  const percent = Math.round((Math.min(answered, 84) / 84) * 100);
+  const ring = document.getElementById("dashboard-progress-ring");
+  if (ring) ring.style.setProperty("--progress", `${percent}%`);
+  document.getElementById("dashboard-progress-percent").textContent = `${percent}%`;
+  document.getElementById("dashboard-answered-count").textContent = answered;
+  document.getElementById("dashboard-progress-bar").style.width = `${percent}%`;
+
+  const kicker = document.getElementById("dashboard-status-kicker");
+  const title = document.getElementById("dashboard-progress-title");
+  const description = document.getElementById("dashboard-progress-description");
+  const action = document.getElementById("dashboard-primary-action");
+  const nextTitle = document.getElementById("dashboard-next-title");
+  const nextDescription = document.getElementById("dashboard-next-description");
+  const isComplete = answered === 84 && !!AppState.reportData;
+  if (isComplete) {
+    kicker.textContent = "ASESMEN SELESAI";
+    title.textContent = "Kamu sudah selangkah lebih dekat.";
+    description.textContent = "Profil potensimu sudah dipetakan. Lihat kembali hasil dan rekomendasi studi yang paling selaras denganmu.";
+    action.innerHTML = '<i class="fas fa-file-lines"></i> <span>Lihat hasil asesmen</span>';
+    action.onclick = () => showView("report-view");
+    nextTitle.textContent = "Jelajahi rekomendasi studimu.";
+    nextDescription.textContent = "Buka laporan lengkap untuk melihat kekuatan utama, kecocokan rumpun studi, dan panduan tindakan berikutnya.";
+  } else if (answered > 0) {
+    kicker.textContent = "PROGRES ASESMENMU";
+    title.textContent = "Bagus, kamu sudah memulai!";
+    description.textContent = `Kamu telah menjawab ${answered} dari 84 pernyataan. Jawabanmu tersimpan otomatis—lanjutkan kapan saja dari perangkat ini.`;
+    action.innerHTML = '<i class="fas fa-arrow-right"></i> <span>Lanjutkan asesmen</span>';
+    action.onclick = () => showView("assessment-view");
+    nextTitle.textContent = "Lanjutkan dari progres terakhirmu.";
+    nextDescription.textContent = "Kamu bisa mengubah jawaban kapan saja. Pilih respons yang paling menggambarkan dirimu.";
+  } else {
+    kicker.textContent = "LANGKAH PERTAMAMU";
+    title.textContent = "Kenali potensi, temukan arah.";
+    description.textContent = "Mulai asesmen 84 pernyataan untuk mendapatkan pemetaan profil dan rekomendasi rumpun studi yang personal.";
+    action.innerHTML = '<i class="fas fa-play"></i> <span>Mulai asesmen</span>';
+    action.onclick = () => showView("assessment-view");
+  }
+
+  const result = document.getElementById("dashboard-result-card");
+  if (result) result.hidden = !isComplete;
+  if (isComplete) {
+    const { personProfile, studyFitResults } = AppState.reportData;
+    document.getElementById("dashboard-signature-code").textContent = personProfile.signature.signatureCode;
+    document.getElementById("dashboard-signature-title").textContent = personProfile.signature.title;
+    document.getElementById("dashboard-readiness-score").textContent = `${personProfile.readinessAnalysis.scorePercent}%`;
+    document.getElementById("dashboard-readiness-level").textContent = personProfile.readinessAnalysis.level;
+    document.getElementById("dashboard-top-major").textContent = studyFitResults[0]?.name || "Lihat laporan lengkap";
+    document.getElementById("dashboard-top-fit").textContent = studyFitResults[0] ? `${studyFitResults[0].fitScore}% kecocokan` : "";
+  }
 }
 
 /**
@@ -624,8 +828,10 @@ function processAndShowReport() {
       student: AppState.student,
       generatedAt: new Date().toISOString()
     };
+    saveState();
 
     renderReportView(AppState.reportData);
+    renderDashboard();
     showLoadingScreen(false);
     showView("report-view");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -669,6 +875,7 @@ function renderReportView(data) {
   // Top 5 Recommendations
   const topFive = studyFitResults.slice(0, 5);
   renderTopFiveCards(topFive);
+  renderReportAtGlance(studyFitResults, readiness);
 
   // All 18 Clusters Filterable Grid
   renderAllClustersGrid(studyFitResults);
@@ -678,6 +885,44 @@ function renderReportView(data) {
 
   // Radar & Dimension Charts
   renderRadarAndDimensionBars(personProfile);
+}
+
+function renderReportAtGlance(studyFitResults, readiness) {
+  const best = studyFitResults[0];
+  const score = Math.max(0, Math.min(100, Number(best?.fitScore) || 0));
+  const bestScore = document.getElementById("rep-glance-best-score");
+  const bestMajor = document.getElementById("rep-glance-best-major");
+  const bestCategory = document.getElementById("rep-glance-best-category");
+  const scoreRing = document.getElementById("rep-glance-score-ring");
+  if (bestScore) bestScore.textContent = `${score}%`;
+  if (bestMajor) bestMajor.textContent = best?.name || "Belum ada rekomendasi";
+  if (bestCategory) bestCategory.textContent = best?.badgeLabel || "";
+  if (scoreRing) {
+    scoreRing.style.setProperty("--match-score", `${score}%`);
+    scoreRing.setAttribute("aria-label", `Kecocokan teratas ${score} persen`);
+  }
+
+  const matches = document.getElementById("rep-glance-top-matches");
+  if (matches) {
+    matches.innerHTML = studyFitResults.slice(0, 3).map((major, index) => {
+      const fitScore = Math.max(0, Math.min(100, Number(major.fitScore) || 0));
+      return `<div class="glance-match-row"><span class="glance-rank">0${index + 1}</span><div class="glance-match-info"><strong>${escapeHtml(major.name)}</strong><span class="glance-match-track"><i style="--match-width:${fitScore}%"></i></span></div><b>${fitScore}%</b></div>`;
+    }).join("");
+  }
+
+  const readinessScore = Math.max(0, Math.min(100, Number(readiness?.scorePercent) || 0));
+  const readinessNumber = document.getElementById("rep-glance-readiness-score");
+  const readinessLevel = document.getElementById("rep-glance-readiness-level");
+  const readinessBar = document.getElementById("rep-glance-readiness-bar");
+  if (readinessNumber) readinessNumber.textContent = `${readinessScore}%`;
+  if (readinessLevel) readinessLevel.textContent = readiness?.level || "Belum tersedia";
+  if (readinessBar) readinessBar.style.width = `${readinessScore}%`;
+  const priority = document.getElementById("rep-glance-priority");
+  if (priority) priority.textContent = readiness?.priorityFocusName || "Eksplorasi jurusan";
+  const nextTitle = document.getElementById("rep-glance-next-title");
+  if (nextTitle) nextTitle.textContent = best ? `Mulai eksplorasi ${best.name}` : "Lanjutkan eksplorasi pilihan studi";
+  const nextCopy = document.getElementById("rep-glance-next-copy");
+  if (nextCopy) nextCopy.textContent = best?.exploreFurther || readiness?.actionAdvice || "Diskusikan hasil ini bersama orang tua atau konselor.";
 }
 
 /**
@@ -978,6 +1223,13 @@ function renderRadarAndDimensionBars(profile) {
  * Generate Ultra-Crisp Responsive SVG Radar Chart
  */
 function generateSvgRadar(data, width, height) {
+  const isDarkTheme = document.documentElement.dataset.theme === "dark";
+  const chartGridColor = isDarkTheme ? "#31483a" : "#e2e8f0";
+  const chartAxisColor = isDarkTheme ? "#455f4f" : "#cbd5e1";
+  const chartLabelColor = isDarkTheme ? "#c2d1c7" : "#0f172a";
+  const chartTextMuted = isDarkTheme ? "#83988c" : "#94a3b8";
+  const chartGlowInner = isDarkTheme ? "#1a2a20" : "#f8fafc";
+  const chartGlowOuter = isDarkTheme ? "#14251c" : "#ffffff";
   const center = width / 2;
   const radius = center - 50;
   const numAxes = data.length;
@@ -994,8 +1246,8 @@ function generateSvgRadar(data, width, height) {
       const y = center + r * Math.sin(angle);
       points.push(`${x.toFixed(1)},${y.toFixed(1)}`);
     }
-    gridPolygons += `<polygon points="${points.join(" ")}" fill="none" stroke="#e2e8f0" stroke-width="1.2" stroke-dasharray="${level < 5 ? '3,3' : 'none'}"/>`;
-    gridPolygons += `<text x="${center + 4}" y="${center - r + 12}" fill="#94a3b8" font-size="10" font-family="sans-serif">${level}</text>`;
+    gridPolygons += `<polygon points="${points.join(" ")}" fill="none" stroke="${chartGridColor}" stroke-width="1.2" stroke-dasharray="${level < 5 ? '3,3' : 'none'}"/>`;
+    gridPolygons += `<text x="${center + 4}" y="${center - r + 12}" fill="${chartTextMuted}" font-size="10" font-family="sans-serif">${level}</text>`;
   }
 
   // Axes lines and labels
@@ -1008,7 +1260,7 @@ function generateSvgRadar(data, width, height) {
     const xEnd = center + radius * Math.cos(angle);
     const yEnd = center + radius * Math.sin(angle);
 
-    axesLines += `<line x1="${center}" y1="${center}" x2="${xEnd.toFixed(1)}" y2="${yEnd.toFixed(1)}" stroke="#cbd5e1" stroke-width="1"/>`;
+    axesLines += `<line x1="${center}" y1="${center}" x2="${xEnd.toFixed(1)}" y2="${yEnd.toFixed(1)}" stroke="${chartAxisColor}" stroke-width="1"/>`;
 
     // Student score point
     const score = Math.max(1, Math.min(5, data[i].val));
@@ -1023,7 +1275,7 @@ function generateSvgRadar(data, width, height) {
     const textAnchor = Math.abs(xLabel - center) < 10 ? "middle" : (xLabel > center ? "start" : "end");
 
     axesLabels += `
-      <text x="${xLabel.toFixed(1)}" y="${(yLabel + 4).toFixed(1)}" text-anchor="${textAnchor}" fill="#0f172a" font-size="11" font-weight="600" font-family="sans-serif">
+      <text x="${xLabel.toFixed(1)}" y="${(yLabel + 4).toFixed(1)}" text-anchor="${textAnchor}" fill="${chartLabelColor}" font-size="11" font-weight="600" font-family="sans-serif">
         ${data[i].label} (${score.toFixed(1)})
       </text>
     `;
@@ -1045,8 +1297,8 @@ function generateSvgRadar(data, width, height) {
     <svg viewBox="0 0 ${width} ${height}" class="radar-svg" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#f8fafc" />
-          <stop offset="100%" stop-color="#ffffff" />
+          <stop offset="0%" stop-color="${chartGlowInner}" />
+          <stop offset="100%" stop-color="${chartGlowOuter}" />
         </radialGradient>
       </defs>
       <circle cx="${center}" cy="${center}" r="${radius}" fill="url(#radarGlow)"/>
@@ -1102,7 +1354,7 @@ function renderDimensionScoresList(profile) {
  * Switch Active View
  */
 function showView(viewId) {
-  const views = ["landing-view", "assessment-view", "report-view"];
+  const views = ["dashboard-view", "landing-view", "assessment-view", "report-view"];
   views.forEach(v => {
     const el = document.getElementById(v);
     if (el) el.classList.remove("active");
